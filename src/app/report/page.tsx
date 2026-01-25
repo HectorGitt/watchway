@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { determineJurisdiction } from "@/lib/jurisdiction";
+import { api } from "@/lib/api";
 
 type Step = 'location' | 'photo' | 'details' | 'success';
 
@@ -38,13 +39,23 @@ export default function ReportPage() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // In real app: POST to API with coords, image, timestamp
-        // Timestamp is server-side generated to prevent spoofing
-        setIsSubmitting(false);
-        setStep('success');
+        try {
+            await api.submitReport({
+                title: title || hazardType,
+                description,
+                lat: coords?.lat || 0,
+                lng: coords?.lng || 0,
+                address: "Detected Address",
+                state: "Lagos",
+                live_image_url: liveImage || ""
+            });
+            setStep('success');
+        } catch (err) {
+            console.error(err);
+            alert("Failed to submit report. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (

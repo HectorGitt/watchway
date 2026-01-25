@@ -22,9 +22,11 @@ export function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                        Sign In
-                    </Button>
+                    <Link href="/login">
+                        <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
+                            Sign In
+                        </Button>
+                    </Link>
                     <Link href="/report">
                         <Button size="sm" className="shadow-lg shadow-orange-900/20">
                             Report Hazard
