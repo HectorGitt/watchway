@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WatchWay Nigeria 🇳🇬
 
-## Getting Started
+**Mapping Every Pothole. Tracking Every Fix.**
 
-First, run the development server:
+WatchWay Nigeria is a nationwide crowdsourced registry designed to document and track the decay of federal and state infrastructure. From washouts on the Lagos-Ibadan Expressway to missing manhole covers in city centers, we provide the data needed to hold authorities accountable.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+-   **Public Hazard Registry**: A unified database of infrastructure failures.
+-   **Live Infrastructure Map**: Real-time interactive map visualizing "Danger Density" across Nigeria.
+-   **Jurisdiction Logic**: Automated system (The "Systems Thinking" Engine) that distinguishes between **Federal** (FERMA) and **State** (Ministry of Works) responsibilities based on location and road names.
+-   **Accountability Leaderboard**: Ranking states by their response times and repair rates (Coming Soon).
+-   **Open Data API**: Empowering CSOs and activists with data for budget defense (Coming Soon).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+-   **Language**: TypeScript
+-   **Styling**: [Tailwind CSS 3](https://tailwindcss.com/) (Custom Premium Dark Theme)
+-   **Maps**: [Leaflet](https://leafletjs.com/) & React Leaflet
+-   **Icons**: Lucide React
+-   **Font**: Outfit (Google Fonts)
 
-## Learn More
+## 🏃‍♂️ Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/yourusername/watchway.git
+    cd watchway
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
 
-## Deploy on Vercel
+4.  **Open the app**:
+    Visit [http://localhost:3000](http://localhost:3000) to see the Landing Page.
+    Visit [http://localhost:3000/map](http://localhost:3000/map) to view the Live Map.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+We are looking for **Coordinators** in all 36 states to help verify reports. Whether you are an engineer, a tech enthusiast, or a frequent traveler, your "Noticing" can save a life.
+
+## 📜 License
+
+Open Data for Public Good.

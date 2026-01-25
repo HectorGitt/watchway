@@ -1,5 +1,6 @@
 import { Map, Trophy, Database, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export function Features() {
     const features = [
@@ -7,19 +8,22 @@ export function Features() {
             icon: Map,
             title: 'The "Danger Zone" Alerts',
             description: 'Real-time data for interstate travelers to know which routes have catastrophic washouts or missing manholes before they start their journey.',
-            action: 'View Map'
+            action: 'View Map',
+            href: '/map'
         },
         {
             icon: Trophy,
             title: 'The Accountability Leaderboard',
             description: 'We rank Nigeria’s 36 states based on response times and repair rates. Who is working? Who is sleeping? The data tells the truth.',
-            action: 'See Rankings'
+            action: 'See Rankings',
+            href: '#'
         },
         {
             icon: Database,
             title: 'API for Activists',
             description: 'Open data for civil society organizations (CSOs) to use during budget defense sessions at the National Assembly. Connect our data to your advocacy.',
-            action: 'Read Documentation'
+            action: 'Read Documentation',
+            href: '#'
         }
     ];
 
@@ -43,10 +47,12 @@ export function Features() {
                             <p className="text-gray-400 mb-8 leading-relaxed flex-grow">
                                 {feature.description}
                             </p>
-                            <Button variant="ghost" className="p-0 hover:bg-transparent hover:text-primary group">
-                                {feature.action}
-                                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                            </Button>
+                            <Link href={feature.href}>
+                                <Button variant="ghost" className="p-0 hover:bg-transparent hover:text-primary group">
+                                    {feature.action}
+                                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
                         </div>
                     ))}
                 </div>

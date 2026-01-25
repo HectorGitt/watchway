@@ -1,5 +1,6 @@
 import { ArrowRight, MapPin, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export function Hero() {
     return (
@@ -39,11 +40,13 @@ export function Hero() {
                         <ShieldAlert className="mr-2 h-5 w-5" />
                         Report a Hazard
                     </Button>
-                    <Button variant="outline" size="lg" className="w-full sm:w-auto h-14 text-lg group">
-                        <MapPin className="mr-2 h-5 w-5" />
-                        Explore the National Map
-                        <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                    </Button>
+                    <Link href="/map">
+                        <Button variant="outline" size="lg" className="w-full sm:w-auto h-14 text-lg group">
+                            <MapPin className="mr-2 h-5 w-5" />
+                            Explore the National Map
+                            <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                        </Button>
+                    </Link>
                 </div>
 
                 {/* Stats / Trust items could go here */}
