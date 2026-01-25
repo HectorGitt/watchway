@@ -17,6 +17,7 @@ export default function ReportPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Form Data
+    const [hazardType, setHazardType] = useState("");
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [jurisdiction, setJurisdiction] = useState<'FEDERAL' | 'STATE' | 'UNKNOWN'>('UNKNOWN');
@@ -112,14 +113,40 @@ export default function ReportPage() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-400 mb-2">Hazard Type</label>
-                            <input
-                                type="text"
+                            <select
                                 required
-                                placeholder="e.g., Deep Washout, Missing Manhole"
-                                className="w-full bg-surface border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none transition-all"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
+                                className="w-full bg-surface border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer"
+                                value={hazardType}
+                                onChange={(e) => {
+                                    const selected = e.target.value;
+                                    setHazardType(selected);
+                                    if (selected !== "Other") {
+                                        setTitle(selected);
+                                    } else {
+                                        setTitle(""); // Clear title for manual input
+                                    }
+                                }}
+                            >
+                                <option value="" disabled>Select a Hazard Type</option>
+                                <option value="Deep Pothole">Deep Pothole</option>
+                                <option value="Road Washout / Erosion">Road Washout / Erosion</option>
+                                <option value="Bridge Damage">Bridge Damage / Expansion Joint</option>
+                                <option value="Missing Manhole Cover">Missing Manhole Cover</option>
+                                <option value="Blocked Drainage / Flooding">Blocked Drainage / Flooding</option>
+                                <option value="Collapsed Pole / Street Light">Collapsed Pole / Street Light</option>
+                                <option value="Other">Other</option>
+                            </select>
+
+                            {hazardType === "Other" && (
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="Specify the hazard..."
+                                    className="mt-3 w-full bg-surface border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none transition-all animate-fade-in"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                />
+                            )}
                         </div>
 
                         <div>
