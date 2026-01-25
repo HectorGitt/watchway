@@ -1,9 +1,9 @@
-const API_URL = "http://localhost:8000";
+const API_URL = "http://127.0.0.1:8000";
 
 export const api = {
-    login: async (username: string, password: string) => {
+    login: async (email: string, password: string) => {
         const formData = new FormData();
-        formData.append("username", username);
+        formData.append("username", email); // OAuth2 expects 'username' field, backend maps this to email
         formData.append("password", password);
 
         const res = await fetch(`${API_URL}/token`, {
@@ -12,6 +12,9 @@ export const api = {
         });
 
         if (!res.ok) {
+            if (res.status === 403) {
+                throw new Error("Email not verified. Please check your inbox.");
+            }
             throw new Error("Login failed");
         }
 
@@ -20,11 +23,11 @@ export const api = {
         return data;
     },
 
-    register: async (username: string, email: string, password: string) => {
+    register: async (email: string, password: string, username?: string) => {
         const res = await fetch(`${API_URL}/users/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email, password }),
+            body: JSON.stringify({ email, password, username }),
         });
 
         if (!res.ok) {
