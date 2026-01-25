@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/animations";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -41,7 +42,7 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col justify-center items-center p-4">
-            <div className="w-full max-w-md bg-surface border border-white/5 p-8 rounded-2xl shadow-2xl backdrop-blur-xl">
+            <FadeIn className="w-full max-w-md bg-surface border border-white/5 p-8 rounded-2xl shadow-2xl backdrop-blur-xl">
                 <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 text-sm">
                     <ArrowLeft className="h-4 w-4" /> Back to Home
                 </Link>
@@ -54,49 +55,57 @@ export default function LoginPage() {
                 </p>
 
                 {error && (
-                    <div className="bg-red-900/20 border border-red-500/50 p-3 rounded-lg text-red-500 text-sm mb-6">
+                    <FadeIn duration={0.3} className="bg-red-900/20 border border-red-500/50 p-3 rounded-lg text-red-500 text-sm mb-6">
                         {error}
-                    </div>
+                    </FadeIn>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
-                        <input
-                            type="email"
-                            required
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
+                    <StaggerContainer>
+                        <StaggerItem>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    required
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                        </StaggerItem>
 
-                    {!isLogin && (
-                        <div className="animate-fade-in">
-                            <label className="block text-sm font-medium text-gray-400 mb-1">Username (Optional)</label>
-                            <input
-                                type="text"
-                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                        </div>
-                    )}
+                        {!isLogin && (
+                            <StaggerItem className="animate-fade-in mt-4">
+                                <label className="block text-sm font-medium text-gray-400 mb-1">Username (Optional)</label>
+                                <input
+                                    type="text"
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                            </StaggerItem>
+                        )}
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
-                        <input
-                            type="password"
-                            required
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
+                        <StaggerItem className="mt-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                                <input
+                                    type="password"
+                                    required
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+                        </StaggerItem>
 
-                    <Button type="submit" disabled={loading} className="w-full mt-2" size="lg">
-                        {loading ? <Loader2 className="animate-spin" /> : (isLogin ? "Sign In" : "Create Account")}
-                    </Button>
+                        <StaggerItem className="mt-6">
+                            <Button type="submit" disabled={loading} className="w-full" size="lg">
+                                {loading ? <Loader2 className="animate-spin" /> : (isLogin ? "Sign In" : "Create Account")}
+                            </Button>
+                        </StaggerItem>
+                    </StaggerContainer>
                 </form>
 
                 <div className="mt-6 text-center text-sm text-gray-500">
@@ -108,7 +117,7 @@ export default function LoginPage() {
                         {isLogin ? "Sign Up" : "Log In"}
                     </button>
                 </div>
-            </div>
+            </FadeIn>
         </div>
     );
 }

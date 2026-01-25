@@ -8,6 +8,7 @@ import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { determineJurisdiction } from "@/lib/jurisdiction";
 import { api } from "@/lib/api";
+import { FadeIn } from "@/components/ui/animations";
 
 type Step = 'location' | 'photo' | 'details' | 'success';
 
@@ -96,7 +97,7 @@ export default function ReportPage() {
 
                 {/* Step 2: Camera Capture */}
                 {step === 'photo' && (
-                    <div className="animate-fade-in">
+                    <FadeIn>
                         <h2 className="text-2xl font-bold mb-2">Proof of Presence</h2>
                         <p className="text-gray-400 mb-6 text-sm">
                             Take a live photo of the hazard. Gallery uploads are disabled to ensure trust.
@@ -109,72 +110,74 @@ export default function ReportPage() {
                                 Retake Location
                             </Button>
                         </div>
-                    </div>
+                    </FadeIn>
                 )}
 
                 {/* Step 3: Details */}
                 {step === 'details' && (
-                    <form onSubmit={handleSubmit} className="animate-fade-in space-y-6">
-                        <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10">
-                            <img src={liveImage!} alt="Evidence" className="w-full h-full object-cover" />
-                            <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white backdrop-blur">
-                                {coords?.lat.toFixed(6)}, {coords?.lng.toFixed(6)}
+                    <FadeIn>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10">
+                                <img src={liveImage!} alt="Evidence" className="w-full h-full object-cover" />
+                                <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white backdrop-blur">
+                                    {coords?.lat.toFixed(6)}, {coords?.lng.toFixed(6)}
+                                </div>
                             </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Hazard Type</label>
-                            <select
-                                required
-                                className="w-full bg-surface border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer"
-                                value={hazardType}
-                                onChange={(e) => {
-                                    const selected = e.target.value;
-                                    setHazardType(selected);
-                                    if (selected !== "Other") {
-                                        setTitle(selected);
-                                    } else {
-                                        setTitle(""); // Clear title for manual input
-                                    }
-                                }}
-                            >
-                                <option value="" disabled>Select a Hazard Type</option>
-                                <option value="Deep Pothole">Deep Pothole</option>
-                                <option value="Road Washout / Erosion">Road Washout / Erosion</option>
-                                <option value="Bridge Damage">Bridge Damage / Expansion Joint</option>
-                                <option value="Missing Manhole Cover">Missing Manhole Cover</option>
-                                <option value="Blocked Drainage / Flooding">Blocked Drainage / Flooding</option>
-                                <option value="Collapsed Pole / Street Light">Collapsed Pole / Street Light</option>
-                                <option value="Other">Other</option>
-                            </select>
-
-                            {hazardType === "Other" && (
-                                <input
-                                    type="text"
+                            {/* ... Fields ... */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-2">Hazard Type</label>
+                                <select
                                     required
-                                    placeholder="Specify the hazard..."
-                                    className="mt-3 w-full bg-surface border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none transition-all animate-fade-in"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
+                                    className="w-full bg-surface border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer"
+                                    value={hazardType}
+                                    onChange={(e) => {
+                                        const selected = e.target.value;
+                                        setHazardType(selected);
+                                        if (selected !== "Other") {
+                                            setTitle(selected);
+                                        } else {
+                                            setTitle(""); // Clear title for manual input
+                                        }
+                                    }}
+                                >
+                                    <option value="" disabled>Select a Hazard Type</option>
+                                    <option value="Deep Pothole">Deep Pothole</option>
+                                    <option value="Road Washout / Erosion">Road Washout / Erosion</option>
+                                    <option value="Bridge Damage">Bridge Damage / Expansion Joint</option>
+                                    <option value="Missing Manhole Cover">Missing Manhole Cover</option>
+                                    <option value="Blocked Drainage / Flooding">Blocked Drainage / Flooding</option>
+                                    <option value="Collapsed Pole / Street Light">Collapsed Pole / Street Light</option>
+                                    <option value="Other">Other</option>
+                                </select>
+
+                                {hazardType === "Other" && (
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="Specify the hazard..."
+                                        className="mt-3 w-full bg-surface border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none transition-all animate-fade-in"
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                    />
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-2">Description</label>
+                                <textarea
+                                    required
+                                    placeholder="Describe the danger and impact on traffic..."
+                                    className="w-full bg-surface border border-white/10 rounded-lg p-3 text-white h-32 focus:ring-2 focus:ring-primary outline-none transition-all resize-none"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
                                 />
-                            )}
-                        </div>
+                            </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-2">Description</label>
-                            <textarea
-                                required
-                                placeholder="Describe the danger and impact on traffic..."
-                                className="w-full bg-surface border border-white/10 rounded-lg p-3 text-white h-32 focus:ring-2 focus:ring-primary outline-none transition-all resize-none"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                        </div>
-
-                        <Button type="submit" disabled={isSubmitting} size="lg" className="w-full text-lg">
-                            {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit Verified Report"}
-                        </Button>
-                    </form>
+                            <Button type="submit" disabled={isSubmitting} size="lg" className="w-full text-lg">
+                                {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit Verified Report"}
+                            </Button>
+                        </form>
+                    </FadeIn>
                 )}
 
                 {/* Step 4: Success */}
