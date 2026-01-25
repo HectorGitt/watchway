@@ -50,6 +50,27 @@ export const api = {
         return res.json();
     },
 
+    verifyEmail: async (token: string) => {
+        const res = await fetch(`${API_URL}/verify/${token}`);
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || "Verification failed");
+        }
+        return res.json();
+    },
+
+    getReports: async (filters: { status?: string, state?: string, hazard_type?: string, search?: string }) => {
+        const params = new URLSearchParams();
+        if (filters.status && filters.status !== 'all') params.append("status", filters.status);
+        if (filters.state && filters.state !== 'all') params.append("state", filters.state);
+        if (filters.hazard_type && filters.hazard_type !== 'all') params.append("hazard_type", filters.hazard_type);
+        if (filters.search) params.append("search", filters.search);
+
+        const res = await fetch(`${API_URL}/reports/?${params.toString()}`);
+        if (!res.ok) throw new Error("Failed to load reports");
+        return res.json();
+    },
+
     submitReport: async (reportData: any) => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Not authenticated");
