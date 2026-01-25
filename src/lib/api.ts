@@ -71,6 +71,12 @@ export const api = {
         return res.json();
     },
 
+    getReport: async (id: string) => {
+        const res = await fetch(`${API_URL}/reports/${id}`);
+        if (!res.ok) throw new Error("Report not found");
+        return res.json();
+    },
+
     submitReport: async (reportData: any) => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Not authenticated");

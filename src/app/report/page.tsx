@@ -4,7 +4,7 @@ import { useState } from "react";
 import { LocationGuard } from "@/components/report/LocationGuard";
 import { CameraCapture } from "@/components/report/CameraCapture";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Loader2, CheckCircle2, MapPin } from "lucide-react";
 import Link from "next/link";
 import { determineJurisdiction } from "@/lib/jurisdiction";
 import { api } from "@/lib/api";
@@ -23,17 +23,31 @@ export default function ReportPage() {
     const [hazardType, setHazardType] = useState("");
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [address, setAddress] = useState<string>("Locating...");
     const [jurisdiction, setJurisdiction] = useState<'FEDERAL' | 'STATE' | 'UNKNOWN'>('UNKNOWN');
 
-    const handleLocation = (loc: { lat: number; lng: number }) => {
+    const handleLocation = async (loc: { lat: number; lng: number }) => {
         setCoords(loc);
         setStep('photo');
+
+        // Reverse Geocode
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${loc.lat}&lon=${loc.lng}`);
+            const data = await res.json();
+            if (data.display_name) {
+                // Simplify address (take first 3 parts)
+                const simpleAddr = data.display_name.split(',').slice(0, 3).join(',');
+                setAddress(simpleAddr);
+            } else {
+                setAddress(`${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`);
+            }
+        } catch (e) {
+            setAddress(`${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`);
+        }
     };
 
     const handlePhoto = (img: string) => {
         setLiveImage(img);
-        // Auto-detect jurisdiction based on mock reverse-geocode or logic
-        // For MVP, we default to UNKNOWN or run logic if we had address
         setStep('details');
     };
 
@@ -47,8 +61,8 @@ export default function ReportPage() {
                 description,
                 lat: coords?.lat || 0,
                 lng: coords?.lng || 0,
-                address: "Detected Address",
-                state: "Lagos",
+                address: address, // Used detected address
+                state: "Lagos", // Ideally this comes from geocode too, but defaulting for now
                 live_image_url: liveImage || ""
             });
             setStep('success');
@@ -120,8 +134,18 @@ export default function ReportPage() {
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10">
                                 <img src={liveImage!} alt="Evidence" className="w-full h-full object-cover" />
-                                <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white backdrop-blur">
-                                    {coords?.lat.toFixed(6)}, {coords?.lng.toFixed(6)}
+                                <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] text-white backdrop-blur max-w-[80%] truncate">
+                                    <MapPin className="inline-block h-3 w-3 mr-1 text-primary" />
+                                    {address}
+                                </div>
+                            </div>
+
+                            {/* Read-only Address Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-2">Detailed Location</label>
+                                <div className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-gray-300 text-sm flex items-center gap-2">
+                                    <MapPin className="h-4 w-4 text-gray-500" />
+                                    {address}
                                 </div>
                             </div>
                             {/* ... Fields ... */}

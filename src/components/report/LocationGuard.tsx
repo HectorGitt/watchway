@@ -33,10 +33,10 @@ export function LocationGuard({ onLocationAcquired, children }: LocationGuardPro
             },
             (err) => {
                 console.error("Geo Error:", err);
-                setErrorMsg("Location access denied. We need GPS to verify the hazard.");
+                setErrorMsg("Weak GPS Signal. Please move outdoors.");
                 setStatus('error');
             },
-            { enableHighAccuracy: true, timeout: 10000 }
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
         );
     };
 
