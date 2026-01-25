@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // Assuming we have or will mock this
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 
@@ -25,13 +24,14 @@ export default function LoginPage() {
 
         try {
             if (isLogin) {
-                await api.login(username, password);
+                await api.login(email, password);
+                router.push("/map");
             } else {
-                await api.register(username, email, password);
-                // Auto-login after register
-                await api.login(username, password);
+                await api.register(email, password, username);
+                // Auto-login disabled because verification is enforced
+                setError("Account created! Verify your email before logging in.");
+                setIsLogin(true); // Switch to login view
             }
-            router.push("/map"); // Redirect to map on success
         } catch (err: any) {
             setError(err.message || "Authentication failed");
         } finally {
@@ -61,25 +61,24 @@ export default function LoginPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Username</label>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
                         <input
-                            type="text"
+                            type="email"
                             required
                             className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
                     {!isLogin && (
                         <div className="animate-fade-in">
-                            <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                            <label className="block text-sm font-medium text-gray-400 mb-1">Username (Optional)</label>
                             <input
-                                type="email"
-                                required
+                                type="text"
                                 className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
                     )}
