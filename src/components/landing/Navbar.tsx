@@ -17,7 +17,7 @@ export function Navbar() {
 
                 <div className="hidden md:flex items-center gap-8">
                     <Link href="/map" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Live Map</Link>
-                    <Link href="#" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Leaderboard</Link>
+                    <Link href="/leaderboard" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Leaderboard</Link>
                     <Link href="#" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">API</Link>
                 </div>
 

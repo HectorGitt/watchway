@@ -16,7 +16,7 @@ export function Features() {
             title: 'The Accountability Leaderboard',
             description: 'We rank Nigeria’s 36 states based on response times and repair rates. Who is working? Who is sleeping? The data tells the truth.',
             action: 'See Rankings',
-            href: '#'
+            href: '/leaderboard'
         },
         {
             icon: Database,
