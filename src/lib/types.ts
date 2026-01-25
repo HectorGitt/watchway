@@ -1,5 +1,5 @@
 export type Jurisdiction = 'FEDERAL' | 'STATE' | 'UNKNOWN';
-export type ReportStatus = 'reported' | 'verified' | 'in_progress' | 'fixed';
+export type ReportStatus = 'unverified' | 'verified' | 'fixed';
 export type UserRole = 'citizen' | 'coordinator' | 'admin';
 
 export interface User {
@@ -10,10 +10,10 @@ export interface User {
 }
 
 export interface Report {
-  id: string;
+  id: string; // Hazard_ID
   title: string;
   description: string;
-  location: {
+  location: { // Coordinates
     lat: number;
     lng: number;
     address: string;
@@ -21,10 +21,19 @@ export interface Report {
     lga: string;
   };
   jurisdiction: Jurisdiction;
-  severity_level: number; // 1-10
-  status: ReportStatus; // Contributes to "Danger Density"
-  images: string[];
-  created_at: string; // ISO string
+  severity_level: number;
+  status: ReportStatus; // 'unverified' | 'verified' | 'fixed'
+
+  // Trust Protocol Fields
+  live_image: string; // URL to the live captured photo
+  verification_count: number;
+  is_verified: boolean;
+
+  // X Automation Fields
+  x_post_status: 'pending' | 'posted' | 'failed';
+  x_link?: string;
+
+  created_at: string;
   reporter_id: string;
 }
 

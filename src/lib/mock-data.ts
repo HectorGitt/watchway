@@ -14,8 +14,12 @@ export const MOCK_REPORTS: Report[] = [
         },
         jurisdiction: "FEDERAL",
         severity_level: 9,
-        status: "reported",
-        images: [],
+        status: "verified",
+        live_image: "/markers/bridge-collapse.jpg", // Placeholder
+        verification_count: 12,
+        is_verified: true,
+        x_post_status: "posted",
+        x_link: "https://x.com/WatchWayNG/status/123456",
         created_at: new Date().toISOString(),
         reporter_id: "u1"
     },
@@ -33,7 +37,10 @@ export const MOCK_REPORTS: Report[] = [
         jurisdiction: "STATE",
         severity_level: 6,
         status: "verified",
-        images: [],
+        live_image: "/markers/pothole-ikeja.jpg",
+        verification_count: 5,
+        is_verified: true,
+        x_post_status: "posted",
         created_at: new Date().toISOString(),
         reporter_id: "u2"
     },
@@ -50,8 +57,11 @@ export const MOCK_REPORTS: Report[] = [
         },
         jurisdiction: "STATE",
         severity_level: 8,
-        status: "reported",
-        images: [],
+        status: "unverified", // Yellow Alert
+        live_image: "/markers/flood-vi.jpg",
+        verification_count: 0,
+        is_verified: false,
+        x_post_status: "pending",
         created_at: new Date().toISOString(),
         reporter_id: "u3"
     },
@@ -68,8 +78,11 @@ export const MOCK_REPORTS: Report[] = [
         },
         jurisdiction: "FEDERAL",
         severity_level: 10,
-        status: "reported",
-        images: [],
+        status: "unverified",
+        live_image: "/markers/washout.jpg",
+        verification_count: 0,
+        is_verified: false,
+        x_post_status: "pending",
         created_at: new Date().toISOString(),
         reporter_id: "u4"
     }

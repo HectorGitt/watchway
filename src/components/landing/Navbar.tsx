@@ -25,9 +25,11 @@ export function Navbar() {
                     <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
                         Sign In
                     </Button>
-                    <Button size="sm" className="shadow-lg shadow-orange-900/20">
-                        Report Hazard
-                    </Button>
+                    <Link href="/report">
+                        <Button size="sm" className="shadow-lg shadow-orange-900/20">
+                            Report Hazard
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </nav>

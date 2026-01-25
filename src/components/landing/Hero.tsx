@@ -36,10 +36,12 @@ export function Hero() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <Button size="lg" className="w-full sm:w-auto h-14 text-lg">
-                        <ShieldAlert className="mr-2 h-5 w-5" />
-                        Report a Hazard
-                    </Button>
+                    <Link href="/report">
+                        <Button size="lg" className="w-full sm:w-auto h-14 text-lg">
+                            <ShieldAlert className="mr-2 h-5 w-5" />
+                            Report a Hazard
+                        </Button>
+                    </Link>
                     <Link href="/map">
                         <Button variant="outline" size="lg" className="w-full sm:w-auto h-14 text-lg group">
                             <MapPin className="mr-2 h-5 w-5" />

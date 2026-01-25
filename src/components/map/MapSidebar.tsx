@@ -70,7 +70,9 @@ export function MapSidebar({ reports }: MapSidebarProps) {
             </div>
 
             <div className="p-4 border-t border-white/5">
-                <Button className="w-full">Report New Hazard</Button>
+                <Link href="/report">
+                    <Button className="w-full">Report New Hazard</Button>
+                </Link>
             </div>
         </div>
     );
