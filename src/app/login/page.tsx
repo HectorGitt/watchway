@@ -14,7 +14,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const [username, setUsername] = useState("");
+    // const [username, setUsername] = useState(""); // Removed
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -28,7 +28,7 @@ export default function LoginPage() {
                 await api.login(email, password);
                 router.push("/map");
             } else {
-                await api.register(email, password, username);
+                await api.register(email, password);
                 // Auto-login disabled because verification is enforced
                 setError("Account created! Verify your email before logging in.");
                 setIsLogin(true); // Switch to login view
@@ -57,6 +57,21 @@ export default function LoginPage() {
                 {error && (
                     <FadeIn duration={0.3} className="bg-red-900/20 border border-red-500/50 p-3 rounded-lg text-red-500 text-sm mb-6">
                         {error}
+                        {error.includes("not verified") && (
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        await api.resendVerification(email);
+                                        alert("Verification email sent! Check your inbox.");
+                                    } catch (e: any) {
+                                        alert(e.message);
+                                    }
+                                }}
+                                className="block mt-2 text-primary hover:underline font-bold"
+                            >
+                                Resend Verification Email
+                            </button>
+                        )}
                     </FadeIn>
                 )}
 
@@ -76,15 +91,9 @@ export default function LoginPage() {
                         </StaggerItem>
 
                         {!isLogin && (
-                            <StaggerItem className="animate-fade-in mt-4">
-                                <label className="block text-sm font-medium text-gray-400 mb-1">Username (Optional)</label>
-                                <input
-                                    type="text"
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white focus:ring-2 focus:ring-primary outline-none"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                />
-                            </StaggerItem>
+                            // Username field removed as per request. 
+                            // It is now auto-generated from email and can be changed in profile.
+                            null
                         )}
 
                         <StaggerItem className="mt-4">
