@@ -125,53 +125,55 @@ export default function HazardsPage() {
                     <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {reports.map((report) => (
                             <StaggerItem key={report.id}>
-                                <div className="group bg-surface border border-white/5 hover:border-primary/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 cursor-pointer">
-                                    <div className="relative h-40 bg-black/50 overflow-hidden">
-                                        <div className="absolute top-2 right-2 z-10">
-                                            <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide backdrop-blur-md border ${report.status === 'verified' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                                <Link href={`/hazards/${report.id}`}>
+                                    <div className="group bg-surface border border-white/5 hover:border-primary/30 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 cursor-pointer h-full flex flex-col">
+                                        <div className="relative h-40 bg-black/50 overflow-hidden">
+                                            <div className="absolute top-2 right-2 z-10">
+                                                <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide backdrop-blur-md border ${report.status === 'verified' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
                                                     report.status === 'fixed' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
                                                         'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-                                                }`}>
-                                                {report.status}
-                                            </span>
-                                        </div>
-                                        {report.live_image_url ? (
-                                            <img
-                                                src={report.live_image_url}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-gray-700">
-                                                <AlertTriangle className="h-8 w-8" />
+                                                    }`}>
+                                                    {report.status}
+                                                </span>
                                             </div>
-                                        )}
-                                        {/* Jurisdiction Badge */}
-                                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-8">
-                                            <div className="flex items-center gap-1.5 text-xs text-white/90 font-medium">
-                                                <span className={`w-2 h-2 rounded-full ${report.jurisdiction === 'FEDERAL' ? 'bg-red-500' : 'bg-orange-500'}`} />
-                                                {report.jurisdiction} ROAD
+                                            {report.live_image_url ? (
+                                                <img
+                                                    src={report.live_image_url}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-gray-700">
+                                                    <AlertTriangle className="h-8 w-8" />
+                                                </div>
+                                            )}
+                                            {/* Jurisdiction Badge */}
+                                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-8">
+                                                <div className="flex items-center gap-1.5 text-xs text-white/90 font-medium">
+                                                    <span className={`w-2 h-2 rounded-full ${report.jurisdiction === 'FEDERAL' ? 'bg-red-500' : 'bg-orange-500'}`} />
+                                                    {report.jurisdiction} ROAD
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4">
+                                            <h3 className="font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors">{report.title}</h3>
+                                            <p className="text-sm text-gray-400 line-clamp-2 min-h-[40px] mb-4">
+                                                {report.description}
+                                            </p>
+
+                                            <div className="flex items-center justify-between text-xs text-gray-500 border-t border-white/5 pt-3">
+                                                <div className="flex items-center gap-1">
+                                                    <MapPin className="h-3 w-3" />
+                                                    {report.state}
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <Clock className="h-3 w-3" />
+                                                    {new Date(report.created_at).toLocaleDateString()}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div className="p-4">
-                                        <h3 className="font-bold text-lg mb-1 line-clamp-1 group-hover:text-primary transition-colors">{report.title}</h3>
-                                        <p className="text-sm text-gray-400 line-clamp-2 min-h-[40px] mb-4">
-                                            {report.description}
-                                        </p>
-
-                                        <div className="flex items-center justify-between text-xs text-gray-500 border-t border-white/5 pt-3">
-                                            <div className="flex items-center gap-1">
-                                                <MapPin className="h-3 w-3" />
-                                                {report.state}
-                                            </div>
-                                            <div className="flex items-center gap-1">
-                                                <Clock className="h-3 w-3" />
-                                                {new Date(report.created_at).toLocaleDateString()}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                </Link>
                             </StaggerItem>
                         ))}
                     </StaggerContainer>
