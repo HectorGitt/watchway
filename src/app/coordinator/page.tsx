@@ -58,6 +58,11 @@ export default function CoordinatorDashboard() {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        router.push("/login");
+    };
+
     if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>;
 
     return (
@@ -77,9 +82,14 @@ export default function CoordinatorDashboard() {
                         </p>
                     </div>
 
-                    <div className="bg-primary/10 border border-primary/20 rounded-lg px-6 py-3 text-center">
-                        <p className="text-xs text-primary/70 uppercase font-bold">Pending Fixes</p>
-                        <p className="text-3xl font-bold text-primary">{hazards.length}</p>
+                    <div className="flex items-center gap-4">
+                        <div className="bg-primary/10 border border-primary/20 rounded-lg px-6 py-3 text-center">
+                            <p className="text-xs text-primary/70 uppercase font-bold">Pending Fixes</p>
+                            <p className="text-3xl font-bold text-primary">{hazards.length}</p>
+                        </div>
+                        <Button variant="outline" size="icon" onClick={handleLogout} className="h-14 w-14 border-white/10 hover:bg-white/5 hover:text-red-400">
+                            <LogOut className="h-5 w-5" />
+                        </Button>
                     </div>
                 </div>
             </div>
