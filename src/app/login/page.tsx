@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/animations";
+import { toast } from "sonner";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -62,9 +63,9 @@ export default function LoginPage() {
                                 onClick={async () => {
                                     try {
                                         await api.resendVerification(email);
-                                        alert("Verification email sent! Check your inbox.");
+                                        toast.success("Verification email sent! Check your inbox.");
                                     } catch (e: any) {
-                                        alert(e.message);
+                                        toast.error(e.message);
                                     }
                                 }}
                                 className="block mt-2 text-primary hover:underline font-bold"

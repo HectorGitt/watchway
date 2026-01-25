@@ -7,6 +7,7 @@ import { ArrowLeft, Loader2, Award, ShieldCheck, AlertTriangle } from "lucide-re
 import Link from "next/link";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/animations";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -59,8 +60,11 @@ export default function ProfilePage() {
                                     const newName = prompt("Enter new username:", user.username);
                                     if (newName && newName !== user.username) {
                                         api.updateProfile({ username: newName })
-                                            .then((updatedUser) => setUser(updatedUser))
-                                            .catch((err) => alert(err.message));
+                                            .then((updatedUser) => {
+                                                setUser(updatedUser);
+                                                toast.success("Username updated!");
+                                            })
+                                            .catch((err) => toast.error(err.message));
                                     }
                                 }}
                                 className="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-primary transition-all"

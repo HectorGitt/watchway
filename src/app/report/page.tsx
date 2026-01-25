@@ -9,6 +9,7 @@ import Link from "next/link";
 import { determineJurisdiction } from "@/lib/jurisdiction";
 import { api } from "@/lib/api";
 import { FadeIn } from "@/components/ui/animations";
+import { toast } from "sonner";
 
 type Step = 'location' | 'photo' | 'details' | 'success';
 
@@ -53,7 +54,7 @@ export default function ReportPage() {
             setStep('success');
         } catch (err) {
             console.error(err);
-            alert("Failed to submit report. Please try again.");
+            toast.error("Failed to submit report. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
