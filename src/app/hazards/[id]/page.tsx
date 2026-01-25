@@ -147,17 +147,23 @@ export default function HazardDetailPage() {
                         </div>
 
                         {/* Verification Action */}
-                        {user && user.id !== report.reporter_id && report.status !== 'verified' && (
-                            <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 flex items-center justify-between">
-                                <div>
-                                    <h3 className="font-bold text-primary">Can you see this hazard?</h3>
-                                    <p className="text-xs text-primary/70">Verify it to help us confirm priority.</p>
+                        {user && report.status !== 'verified' && (
+                            user.id === report.reporter_id ? (
+                                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                                    <p className="text-gray-400 text-sm">You reported this hazard. <span className="text-primary">Thanks for your contribution!</span></p>
                                 </div>
-                                <Button onClick={handleVerify} disabled={verifying} className="gap-2">
-                                    {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                                    Verify Now
-                                </Button>
-                            </div>
+                            ) : (
+                                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 flex items-center justify-between">
+                                    <div>
+                                        <h3 className="font-bold text-primary">Can you see this hazard?</h3>
+                                        <p className="text-xs text-primary/70">Verify it to help us confirm priority.</p>
+                                    </div>
+                                    <Button onClick={handleVerify} disabled={verifying} className="gap-2">
+                                        {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                                        Verify Now
+                                    </Button>
+                                </div>
+                            )
                         )}
 
                         <div className="bg-surface border border-white/5 rounded-xl p-6">

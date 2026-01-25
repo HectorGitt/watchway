@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { Loader2, hardHat, CheckCircle2, MapPin, Camera, LogOut } from "lucide-react";
+import { Loader2, HardHat, CheckCircle2, MapPin, Camera, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/animations";
