@@ -77,6 +77,22 @@ export const api = {
         return res.json();
     },
 
+    verifyHazard: async (id: string) => {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Not authenticated");
+
+        const res = await fetch(`${API_URL}/reports/${id}/verify`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || "Verification failed");
+        }
+        return res.json();
+    },
+
     submitReport: async (reportData: any) => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Not authenticated");
@@ -92,6 +108,26 @@ export const api = {
 
         if (!res.ok) {
             throw new Error("Failed to submit report");
+        }
+        return res.json();
+    },
+
+    resolveHazard: async (id: string, afterImageUrl: string) => {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Not authenticated");
+
+        const res = await fetch(`${API_URL}/reports/${id}/resolve`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ after_image_url: afterImageUrl })
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || "Resolution failed");
         }
         return res.json();
     },

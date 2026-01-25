@@ -15,18 +15,35 @@ export default function HazardDetailPage() {
     const id = params.id as string;
 
     const [report, setReport] = useState<any>(null);
+    const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [verifying, setVerifying] = useState(false);
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (!id) return;
-        api.getReport(id)
-            .then(setReport)
-            .catch(() => {
+
+        // Parallel fetch
+        const fetchData = async () => {
+            try {
+                const reportData = await api.getReport(id);
+                setReport(reportData);
+
+                // Try fetching user (might fail if not logged in)
+                try {
+                    const userData = await api.getProfile();
+                    setUser(userData);
+                } catch (e) {
+                    // Not logged in, that's fine
+                }
+            } catch (error) {
                 toast.error("Hazard not found");
                 router.push("/hazards");
-            })
-            .finally(() => setLoading(false));
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
     }, [id, router]);
 
     const handleShare = () => {
@@ -36,6 +53,25 @@ export default function HazardDetailPage() {
             toast.success("Link copied to clipboard!");
             setTimeout(() => setCopied(false), 2000);
         });
+    };
+
+    const handleVerify = async () => {
+        if (!user) {
+            toast.error("Please login to verify hazards");
+            router.push("/login");
+            return;
+        }
+
+        setVerifying(true);
+        try {
+            const updatedReport = await api.verifyHazard(id);
+            setReport(updatedReport);
+            toast.success("Hazard verified! +1 Civic Point");
+        } catch (error: any) {
+            toast.error(error.message);
+        } finally {
+            setVerifying(false);
+        }
     };
 
     if (loading) {
@@ -78,8 +114,8 @@ export default function HazardDetailPage() {
                                 )}
                                 <div className="absolute top-4 left-4">
                                     <span className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide backdrop-blur-xl shadow-lg ${report.status === 'verified' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                                            report.status === 'fixed' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-                                                'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                                        report.status === 'fixed' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                                            'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
                                         }`}>
                                         {report.status}
                                     </span>
@@ -102,41 +138,54 @@ export default function HazardDetailPage() {
 
                         {/* Details Column */}
                         <div className="space-y-6">
-                            <div>
-                                <h1 className="text-3xl font-bold mb-2">{report.title}</h1>
-                                <div className="flex items-center gap-2 text-gray-400 text-sm">
+                            <h1 className="text-3xl font-bold mb-2">{report.title}</h1>
+                            <div className="flex items-center gap-2 text-gray-400 text-sm">
+                                <MapPin className="h-4 w-4 text-primary" />
+                                {report.address}
+                            </div>
+                            {report.address}
+                        </div>
+
+                        {/* Verification Action */}
+                        {user && user.id !== report.reporter_id && report.status !== 'verified' && (
+                            <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 flex items-center justify-between">
+                                <div>
+                                    <h3 className="font-bold text-primary">Can you see this hazard?</h3>
+                                    <p className="text-xs text-primary/70">Verify it to help us confirm priority.</p>
+                                </div>
+                                <Button onClick={handleVerify} disabled={verifying} className="gap-2">
+                                    {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                                    Verify Now
+                                </Button>
+                            </div>
+                        )}
+
+                        <div className="bg-surface border border-white/5 rounded-xl p-6">
+                            <h3 className="font-bold text-gray-300 mb-3">Description</h3>
+                            <p className="text-gray-400 leading-relaxed">
+                                {report.description}
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-surface border border-white/5 rounded-xl p-4">
+                                <p className="text-xs text-gray-500 mb-1">Reported On</p>
+                                <div className="flex items-center gap-2 text-white">
+                                    <Calendar className="h-4 w-4 text-primary" />
+                                    {new Date(report.created_at).toLocaleDateString()}
+                                </div>
+                            </div>
+                            <div className="bg-surface border border-white/5 rounded-xl p-4">
+                                <p className="text-xs text-gray-500 mb-1">State</p>
+                                <div className="flex items-center gap-2 text-white">
                                     <MapPin className="h-4 w-4 text-primary" />
-                                    {report.address}
-                                </div>
-                            </div>
-
-                            <div className="bg-surface border border-white/5 rounded-xl p-6">
-                                <h3 className="font-bold text-gray-300 mb-3">Description</h3>
-                                <p className="text-gray-400 leading-relaxed">
-                                    {report.description}
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-surface border border-white/5 rounded-xl p-4">
-                                    <p className="text-xs text-gray-500 mb-1">Reported On</p>
-                                    <div className="flex items-center gap-2 text-white">
-                                        <Calendar className="h-4 w-4 text-primary" />
-                                        {new Date(report.created_at).toLocaleDateString()}
-                                    </div>
-                                </div>
-                                <div className="bg-surface border border-white/5 rounded-xl p-4">
-                                    <p className="text-xs text-gray-500 mb-1">State</p>
-                                    <div className="flex items-center gap-2 text-white">
-                                        <MapPin className="h-4 w-4 text-primary" />
-                                        {report.state}
-                                    </div>
+                                    {report.state}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </FadeIn>
             </main>
-        </div>
+        </div >
     );
 }
