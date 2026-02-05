@@ -7,6 +7,8 @@ export interface User {
   role: UserRole;
   state_of_residence: string;
   lga: string;
+  is_verified: boolean;
+  is_suspended: boolean;
 }
 
 export interface Report {

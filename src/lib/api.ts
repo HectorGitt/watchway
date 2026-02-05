@@ -162,5 +162,35 @@ export const api = {
             throw new Error(err.detail || "Failed to update profile");
         }
         return res.json();
+    },
+
+    // --- Admin API ---
+    getUsers: async (token: string, filters?: { role?: string }) => {
+        const params = new URLSearchParams();
+        if (filters?.role) params.append("role", filters.role);
+
+        const res = await fetch(`${API_URL}/users/?${params.toString()}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to load users");
+        return res.json();
+    },
+
+    updateUserRole: async (token: string, userId: string, role: string) => {
+        const res = await fetch(`${API_URL}/users/${userId}/role?role=${role}`, {
+            method: "PUT",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to update role");
+        return res.json();
+    },
+
+    suspendUser: async (token: string, userId: string) => {
+        const res = await fetch(`${API_URL}/users/${userId}/suspend`, {
+            method: "PUT",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to suspend user");
+        return res.json();
     }
 };
