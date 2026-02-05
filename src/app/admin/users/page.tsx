@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { User } from "@/lib/types";
-import { Loader2, Search, shield, ShieldAlert, UserCog, UserX, Check, X, Shield } from "lucide-react";
+import { Loader2, Search, ShieldAlert, UserCog, UserX, Check, X, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 

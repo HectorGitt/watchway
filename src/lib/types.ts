@@ -4,6 +4,8 @@ export type UserRole = 'citizen' | 'coordinator' | 'admin';
 
 export interface User {
   id: string;
+  username: string;
+  email: string;
   role: UserRole;
   state_of_residence: string;
   lga: string;

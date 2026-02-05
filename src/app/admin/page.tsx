@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Card } from "@/components/ui/card"; // Assuming Card exists or I'll use div
+// import { Card } from "@/components/ui/card"; // Removed unused import
 import { Users, AlertTriangle, CheckCircle } from "lucide-react";
 
 export default function AdminDashboardPage() {
