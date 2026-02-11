@@ -263,5 +263,13 @@ export const api = {
         });
         if (!res.ok) throw new Error("Failed to review application");
         return res.json();
+    },
+
+    getAdminStats: async (token: string) => {
+        const res = await fetch(`${API_URL}/admin/stats`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to load admin stats");
+        return res.json();
     }
 };
