@@ -77,13 +77,17 @@ export const api = {
         return res.json();
     },
 
-    verifyHazard: async (id: string) => {
+    verifyReport: async (id: string, lat?: number, lng?: number) => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Not authenticated");
 
         const res = await fetch(`${API_URL}/reports/${id}/verify`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ lat, lng }),
         });
 
         if (!res.ok) {
@@ -112,7 +116,7 @@ export const api = {
         return res.json();
     },
 
-    resolveHazard: async (id: string, afterImageUrl: string) => {
+    resolveReport: async (id: string, afterImageUrl: string, lat?: number, lng?: number) => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Not authenticated");
 
@@ -122,9 +126,8 @@ export const api = {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({ after_image_url: afterImageUrl })
+            body: JSON.stringify({ after_image_url: afterImageUrl, lat, lng }),
         });
-
         if (!res.ok) {
             const err = await res.json();
             throw new Error(err.detail || "Resolution failed");

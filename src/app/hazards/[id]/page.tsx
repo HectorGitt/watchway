@@ -63,15 +63,47 @@ export default function HazardDetailPage() {
         }
 
         setVerifying(true);
-        try {
-            const updatedReport = await api.verifyHazard(id);
-            setReport(updatedReport);
-            toast.success("Hazard verified! +1 Civic Point");
-        } catch (error: any) {
-            toast.error(error.message);
-        } finally {
-            setVerifying(false);
+
+        // Coordinator/Admin bypasses location check
+        if (user.role === 'coordinator' || user.role === 'admin') {
+            try {
+                const updatedReport = await api.verifyReport(id);
+                setReport(updatedReport);
+                toast.success("Hazard verified (Remote Override)!");
+            } catch (error: any) {
+                toast.error(error.message);
+            } finally {
+                setVerifying(false);
+            }
+            return;
         }
+
+        // Citizen Flow: Get Location
+        if (!navigator.geolocation) {
+            toast.error("Geolocation is not supported by your browser");
+            setVerifying(false);
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                try {
+                    const { latitude, longitude } = position.coords;
+                    const updatedReport = await api.verifyReport(id, latitude, longitude);
+                    setReport(updatedReport);
+                    toast.success("Hazard verified! +1 Civic Point");
+                } catch (error: any) {
+                    toast.error(error.message);
+                } finally {
+                    setVerifying(false);
+                }
+            },
+            (error) => {
+                toast.error("Location access denied. You must be at the location to verify.");
+                setVerifying(false);
+            },
+            { enableHighAccuracy: true }
+        );
     };
 
     if (loading) {
@@ -145,6 +177,58 @@ export default function HazardDetailPage() {
                             </div>
                             {report.address}
                         </div>
+
+                        {/* Resolve Action (Fix Handling) */}
+                        {user && (report.status === 'verified' || report.status === 'fix_pending') && (
+                            <div className="mt-4 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+                                <h3 className="font-bold text-blue-400 mb-2">
+                                    {report.status === 'verified' ? "Is this fixed?" : "Confirm the Fix"}
+                                </h3>
+                                <p className="text-xs text-blue-300/70 mb-3">
+                                    {report.status === 'verified'
+                                        ? "If repairs are complete, submit a photo to start the resolution process."
+                                        : "A fix has been reported. Verify it to mark as Resolved."}
+                                </p>
+                                <Button
+                                    onClick={() => {
+                                        // TODO: Logic for image upload would go here. 
+                                        // For MVP, if Coordinator, instant resolve. If Citizen, prompt.
+                                        // Simplified: Prompt for image URL or just confirm if coord.
+                                        const afterImage = prompt("Enter URL of fixed image (or leave empty if just confirming):");
+                                        if (afterImage === null) return; // Cancelled
+
+                                        // Reuse same geolocation flow
+                                        if (user.role === 'coordinator' || user.role === 'admin') {
+                                            api.resolveReport(id, afterImage || "")
+                                                .then(updated => {
+                                                    setReport(updated);
+                                                    toast.success("Marked as Resolved!");
+                                                })
+                                                .catch(e => toast.error(e.message));
+                                        } else {
+                                            navigator.geolocation.getCurrentPosition(
+                                                async (position) => {
+                                                    try {
+                                                        const { latitude, longitude } = position.coords;
+                                                        const updated = await api.resolveReport(id, afterImage || "", latitude, longitude);
+                                                        setReport(updated);
+                                                        toast.success("Report submitted!");
+                                                    } catch (e: any) {
+                                                        toast.error(e.message);
+                                                    }
+                                                },
+                                                () => toast.error("Location required"),
+                                                { enableHighAccuracy: true }
+                                            );
+                                        }
+                                    }}
+                                    className="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                                >
+                                    <Check className="h-4 w-4" />
+                                    {report.status === 'verified' ? "Report Fix" : "Confirm Fix"}
+                                </Button>
+                            </div>
+                        )}
 
                         {/* Verification Action */}
                         {user && report.status === 'unverified' && (
