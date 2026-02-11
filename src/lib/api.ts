@@ -139,11 +139,15 @@ export const api = {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Not authenticated");
 
+        console.log("API: Fetching profile with token", token.substring(0, 10) + "...");
         const res = await fetch(`${API_URL}/users/me/`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
-        if (!res.ok) throw new Error("Failed to load profile");
+        if (!res.ok) {
+            console.error("API: Profile fetch failed", res.status, res.statusText);
+            throw new Error("Failed to load profile");
+        }
         return res.json();
     },
 

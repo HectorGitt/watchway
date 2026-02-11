@@ -11,7 +11,6 @@ import { toast } from "sonner";
 
 import { Modal } from "@/components/ui/modal";
 import { Edit2, Lock, Save } from "lucide-react";
-import { Input } from "@/components/ui/input"; // Assuming we have Input, if not I'll use standard input with classNames
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -27,13 +26,21 @@ export default function ProfilePage() {
     const [passwordForm, setPasswordForm] = useState({ old_password: "", new_password: "", confirm_password: "" });
 
     useEffect(() => {
+        console.log("ProfilePage: Fetching profile...");
         api.getProfile()
             .then(u => {
+                console.log("ProfilePage: Profile loaded", u);
                 setUser(u);
                 setNewUsername(u.username);
             })
-            .catch(() => router.push('/login'))
-            .finally(() => setLoading(false));
+            .catch((err) => {
+                console.error("ProfilePage: Failed to load profile", err);
+                router.push('/login');
+            })
+            .finally(() => {
+                console.log("ProfilePage: Loading finished");
+                setLoading(false);
+            });
     }, [router]);
 
     const handleUpdateProfile = async () => {
