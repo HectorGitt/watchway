@@ -47,7 +47,7 @@ export default function CoordinatorDashboard() {
 
         setResolvingId(id);
         try {
-            await api.resolveHazard(id, mockAfterImage);
+            await api.resolveReport(id, mockAfterImage);
             toast.success("Hazard marked as FIXED! Great work.");
             // Remove from list
             setHazards(prev => prev.filter(h => h.id !== id));
