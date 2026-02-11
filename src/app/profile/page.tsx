@@ -135,6 +135,55 @@ export default function ProfilePage() {
                                 Password
                             </button>
                         </div>
+
+                        {/* Coordinator Application Section */}
+                        {user.role === 'citizen' && (
+                            <div className="mt-6 pt-6 border-t border-white/5">
+                                <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+                                    <ShieldCheck className="h-5 w-5 text-primary" />
+                                    Become a Coordinator
+                                </h3>
+                                <p className="text-gray-400 text-sm mb-4">
+                                    Coordinators help verify reports and manage fixes in their state.
+                                    {user.coordinator_application_status === 'NONE'
+                                        ? " Apply to help your community."
+                                        : " Your application is under review."}
+                                </p>
+
+                                {user.coordinator_application_status === 'NONE' && (
+                                    <Button
+                                        onClick={async () => {
+                                            if (!confirm("Are you sure you want to apply? This will send a request to the admins.")) return;
+                                            try {
+                                                const token = localStorage.getItem("token") || "";
+                                                await api.applyCoordinator(token);
+                                                toast.success("Application submitted!");
+                                                // Refresh profile
+                                                const updated = await api.getProfile();
+                                                setUser(updated);
+                                            } catch (e: any) {
+                                                toast.error(e.message);
+                                            }
+                                        }}
+                                        className="w-full sm:w-auto"
+                                    >
+                                        Apply Now
+                                    </Button>
+                                )}
+
+                                {user.coordinator_application_status === 'PENDING' && (
+                                    <div className="bg-yellow-500/10 text-yellow-500 px-4 py-2 rounded-lg text-sm font-medium border border-yellow-500/20 inline-block">
+                                        Application Pending Review
+                                    </div>
+                                )}
+
+                                {user.coordinator_application_status === 'REJECTED' && (
+                                    <div className="bg-red-500/10 text-red-500 px-4 py-2 rounded-lg text-sm font-medium border border-red-500/20 inline-block">
+                                        Application Rejected
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Stats Grid */}
@@ -272,6 +321,6 @@ export default function ProfilePage() {
                     </Button>
                 </div>
             </Modal>
-        </div>
+        </div >
     );
 }

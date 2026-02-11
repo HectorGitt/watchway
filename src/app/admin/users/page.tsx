@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { User } from "@/lib/types";
-import { Loader2, Search, ShieldAlert, UserCog, UserX, Check, X, Shield } from "lucide-react";
+import { Loader2, Search, UserCog, UserX, Check, X, Shield, ShieldCheck, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Modal } from "@/components/ui/modal";
 
 export default function UserManagementPage() {
     const [users, setUsers] = useState<User[]>([]);
@@ -13,6 +14,11 @@ export default function UserManagementPage() {
     const [search, setSearch] = useState("");
     const [sortBy, setSortBy] = useState("id");
     const [processingId, setProcessingId] = useState<string | null>(null);
+
+    // Modal State
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+    const [newRole, setNewRole] = useState("citizen");
 
     const loadUsers = async () => {
         try {
@@ -30,15 +36,39 @@ export default function UserManagementPage() {
         loadUsers();
     }, [sortBy]);
 
-    const handleRoleChange = async (userId: string, newRole: string) => {
-        setProcessingId(userId);
+    const openRoleModal = (user: User) => {
+        setSelectedUser(user);
+        setNewRole(user.role);
+        setIsRoleModalOpen(true);
+    };
+
+    const handleSaveRole = async () => {
+        if (!selectedUser) return;
+        setProcessingId(selectedUser.id);
         try {
             const token = localStorage.getItem("token") || "";
-            await api.updateUserRole(token, userId, newRole);
+            await api.updateUserRole(token, selectedUser.id, newRole);
             toast.success("User role updated");
-            loadUsers(); // Refresh list
+            loadUsers();
+            setIsRoleModalOpen(false);
         } catch (e) {
             toast.error("Failed to update role");
+        } finally {
+            setProcessingId(null);
+        }
+    };
+
+    const handleReviewApplication = async (status: "APPROVED" | "REJECTED") => {
+        if (!selectedUser) return;
+        setProcessingId(selectedUser.id);
+        try {
+            const token = localStorage.getItem("token") || "";
+            await api.reviewApplication(token, selectedUser.id, status);
+            toast.success(`Application ${status.toLowerCase()}`);
+            loadUsers(); // Refresh list
+            setIsRoleModalOpen(false); // Close modal on success
+        } catch (e) {
+            toast.error("Failed to review application");
         } finally {
             setProcessingId(null);
         }
@@ -50,7 +80,6 @@ export default function UserManagementPage() {
             const token = localStorage.getItem("token") || "";
             const updatedUser = await api.suspendUser(token, userId);
             toast.success(updatedUser.is_suspended ? "User suspended" : "User restored");
-            // Update local state faster
             setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_suspended: updatedUser.is_suspended } : u));
         } catch (e) {
             toast.error("Failed to toggle suspension");
@@ -111,20 +140,22 @@ export default function UserManagementPage() {
                         {filteredUsers.map((user) => (
                             <tr key={user.id} className="hover:bg-white/5 transition-colors">
                                 <td className="p-4">
-                                    <div className="font-bold text-white">{user.username || "No Name"}</div>
-                                    <div className="text-sm text-gray-500">{user.email}</div>
+                                    <div className="flex items-center gap-2">
+                                        <div>
+                                            <div className="font-bold text-white flex items-center gap-2">
+                                                {user.username || "No Name"}
+                                                {user.coordinator_application_status === 'PENDING' && (
+                                                    <span className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" title="Application Pending" />
+                                                )}
+                                            </div>
+                                            <div className="text-sm text-gray-500">{user.email}</div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td className="p-4">
-                                    <select
-                                        value={user.role}
-                                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                                        disabled={processingId === user.id}
-                                        className="bg-black border border-white/10 rounded px-2 py-1 text-sm bg-transparent focus:border-primary"
-                                    >
-                                        <option value="citizen">Citizen</option>
-                                        <option value="coordinator">Coordinator</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
+                                    {user.role === 'admin' && <span className="text-purple-400 font-bold text-xs uppercase flex items-center gap-1"><ShieldCheck className="h-3 w-3" /> Admin</span>}
+                                    {user.role === 'coordinator' && <span className="text-blue-400 font-bold text-xs uppercase flex items-center gap-1"><Shield className="h-3 w-3" /> Coordinator</span>}
+                                    {user.role === 'citizen' && <span className="text-gray-400 text-xs uppercase">Citizen</span>}
                                 </td>
                                 <td className="p-4">
                                     <div className="font-mono text-primary font-bold">
@@ -147,34 +178,77 @@ export default function UserManagementPage() {
                                         )}
                                     </div>
                                 </td>
-                                <td className="p-4 text-right">
+                                <td className="p-4 text-right flex items-center justify-end gap-2">
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => openRoleModal(user)}
+                                        className="h-8 w-8 p-0"
+                                        title="Manage Role"
+                                    >
+                                        <UserCog className="h-4 w-4 text-gray-400 hover:text-white" />
+                                    </Button>
                                     <Button
                                         size="sm"
                                         variant="ghost"
                                         onClick={() => handleSuspend(user.id)}
                                         disabled={processingId === user.id}
-                                        className={user.is_suspended ? "text-green-500 hover:text-green-400 hover:bg-green-500/10" : "text-red-500 hover:text-red-400 hover:bg-red-500/10"}
+                                        className={user.is_suspended ? "text-green-500 hover:text-green-400" : "text-red-500 hover:text-red-400"}
                                     >
-                                        {processingId === user.id ? (
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                        ) : user.is_suspended ? (
-                                            "Restore"
-                                        ) : (
-                                            "Suspend"
-                                        )}
+                                        {user.is_suspended ? "Restore" : "Suspend"}
                                     </Button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-
-                {filteredUsers.length === 0 && (
-                    <div className="p-8 text-center text-gray-500">
-                        No users found.
-                    </div>
-                )}
             </div>
+
+            <Modal
+                isOpen={isRoleModalOpen}
+                onClose={() => setIsRoleModalOpen(false)}
+                title={`Manage User: ${selectedUser?.username}`}
+            >
+                <div className="space-y-6">
+                    {selectedUser?.coordinator_application_status === 'PENDING' && (
+                        <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-lg">
+                            <h4 className="font-bold text-yellow-500 flex items-center gap-2 mb-2">
+                                <Mail className="h-4 w-4" />
+                                Coordinator Application Pending
+                            </h4>
+                            <p className="text-sm text-gray-300 mb-4">
+                                This user has applied to become a coordinator. Review their application implicitly by approving or checking their details.
+                            </p>
+                            <div className="flex gap-2">
+                                <Button size="sm" onClick={() => handleReviewApplication("APPROVED")} className="bg-green-600 hover:bg-green-700">
+                                    Approve Application
+                                </Button>
+                                <Button size="sm" variant="outline" onClick={() => handleReviewApplication("REJECTED")} className="border-red-500/50 text-red-500 hover:bg-red-500/10">
+                                    Reject
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    <div>
+                        <label className="block text-sm text-gray-400 mb-2">Change Role Manually</label>
+                        <select
+                            value={newRole}
+                            onChange={(e) => setNewRole(e.target.value)}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary transition-colors"
+                        >
+                            <option value="citizen">Citizen</option>
+                            <option value="coordinator">Coordinator</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <Button onClick={handleSaveRole} className="w-full" disabled={!selectedUser || processingId === selectedUser?.id}>
+                        {processingId === selectedUser?.id && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Update Role
+                    </Button>
+                </div>
+            </Modal>
         </div>
     );
 }

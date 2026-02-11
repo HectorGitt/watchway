@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Network } from 'lucide-react';
+import Link from 'next/link';
 
 export function CTA() {
     return (
@@ -18,11 +19,13 @@ export function CTA() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    <Button size="lg" className="h-16 px-10 text-lg bg-white text-black hover:bg-gray-200 shadow-xl">
-                        Join as a Coordinator
-                    </Button>
-                    <Button variant="outline" size="lg" className="h-16 px-10 text-lg border-white/20 hover:bg-white/10 text-white">
-                        Download the App
+                    <Link href="/profile">
+                        <Button size="lg" className="h-16 px-10 text-lg bg-white text-black hover:bg-gray-200 shadow-xl w-full sm:w-auto">
+                            Join as a Coordinator
+                        </Button>
+                    </Link>
+                    <Button variant="outline" size="lg" disabled className="h-16 px-10 text-lg border-white/20 text-white/50 cursor-not-allowed w-full sm:w-auto">
+                        App Coming Soon
                     </Button>
                 </div>
             </div>

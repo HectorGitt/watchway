@@ -4,6 +4,7 @@ import { Problem } from "@/components/landing/Problem";
 import { Features } from "@/components/landing/Features";
 import { CTA } from "@/components/landing/CTA";
 import { Footer } from "@/components/landing/Footer";
+import { RoleExplainer } from "@/components/landing/RoleExplainer";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Problem />
+      <RoleExplainer />
       <Features />
       <CTA />
       <Footer />

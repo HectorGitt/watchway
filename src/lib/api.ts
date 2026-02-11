@@ -167,6 +167,26 @@ export const api = {
         return res.json();
     },
 
+    updatePassword: async (data: { old_password: string, new_password: string }) => {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Not authenticated");
+
+        const res = await fetch(`${API_URL}/users/me/password`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || "Failed to update password");
+        }
+        return res.json();
+    },
+
     // --- Admin API ---
     getUsers: async (token: string, filters?: { role?: string, sort_by?: string }) => {
         const params = new URLSearchParams();
@@ -216,6 +236,28 @@ export const api = {
             body: JSON.stringify({ key, value, description }),
         });
         if (!res.ok) throw new Error("Failed to update setting");
+        return res.json();
+    },
+
+    applyCoordinator: async (token: string) => {
+        const res = await fetch(`${API_URL}/users/apply-coordinator`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || "Application failed");
+        }
+        return res.json();
+    },
+
+    reviewApplication: async (token: string, userId: string, status: "APPROVED" | "REJECTED") => {
+        const res = await fetch(`${API_URL}/users/${userId}/review-application?status=${status}`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to review application");
         return res.json();
     }
 };

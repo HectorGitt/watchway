@@ -11,6 +11,7 @@ export interface User {
   is_verified: boolean;
   is_suspended: boolean;
   civic_points: number;
+  coordinator_application_status: "NONE" | "PENDING" | "APPROVED" | "REJECTED";
 }
 
 export interface Report {
