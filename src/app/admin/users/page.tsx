@@ -109,8 +109,8 @@ export default function UserManagementPage() {
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                     >
-                        <option value="id">Default Sort</option>
-                        <option value="civic_points">Highest Trust</option>
+                        <option value="id" className="bg-black text-white">Default Sort</option>
+                        <option value="civic_points" className="bg-black text-white">Highest Trust</option>
                     </select>
 
                     <div className="relative flex-1">
@@ -237,9 +237,9 @@ export default function UserManagementPage() {
                             onChange={(e) => setNewRole(e.target.value)}
                             className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary transition-colors"
                         >
-                            <option value="citizen">Citizen</option>
-                            <option value="coordinator">Coordinator</option>
-                            <option value="admin">Admin</option>
+                            <option value="citizen" className="bg-black text-white">Citizen</option>
+                            <option value="coordinator" className="bg-black text-white">Coordinator</option>
+                            <option value="admin" className="bg-black text-white">Admin</option>
                         </select>
                     </div>
 
