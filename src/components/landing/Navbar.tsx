@@ -2,15 +2,30 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ShieldAlert, User } from 'lucide-react';
+import { ShieldAlert, User, ShieldCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { api } from '@/lib/api';
 
 export function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        setIsLoggedIn(!!token);
+        const checkAuth = async () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                setIsLoggedIn(true);
+                try {
+                    const profile = await api.getProfile();
+                    if (profile.role === 'admin') {
+                        setIsAdmin(true);
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch profile", e);
+                }
+            }
+        };
+        checkAuth();
     }, []);
 
     return (
@@ -29,6 +44,12 @@ export function Navbar() {
                     <Link href="/map" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Live Map</Link>
                     <Link href="/hazards" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Database</Link>
                     <Link href="/leaderboard" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">Leaderboard</Link>
+                    {isAdmin && (
+                        <Link href="/admin" className="text-sm font-medium text-red-400 hover:text-red-300 transition-colors flex items-center gap-1">
+                            <ShieldCheck className="h-4 w-4" />
+                            Admin Panel
+                        </Link>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-4">

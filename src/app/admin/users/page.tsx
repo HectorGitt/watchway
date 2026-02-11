@@ -11,12 +11,13 @@ export default function UserManagementPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+    const [sortBy, setSortBy] = useState("id");
     const [processingId, setProcessingId] = useState<string | null>(null);
 
     const loadUsers = async () => {
         try {
             const token = localStorage.getItem("token") || "";
-            const data = await api.getUsers(token);
+            const data = await api.getUsers(token, { sort_by: sortBy });
             setUsers(data);
         } catch (e) {
             toast.error("Failed to load users");
@@ -27,7 +28,7 @@ export default function UserManagementPage() {
 
     useEffect(() => {
         loadUsers();
-    }, []);
+    }, [sortBy]);
 
     const handleRoleChange = async (userId: string, newRole: string) => {
         setProcessingId(userId);
@@ -73,14 +74,25 @@ export default function UserManagementPage() {
                     User Management
                 </h1>
 
-                <div className="relative w-full md:w-64">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                        className="w-full bg-surface border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-primary"
-                        placeholder="Search users..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
+                <div className="relative w-full md:w-64 flex gap-2">
+                    <select
+                        className="bg-surface border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary text-gray-400"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                    >
+                        <option value="id">Default Sort</option>
+                        <option value="civic_points">Highest Trust</option>
+                    </select>
+
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <input
+                            className="w-full bg-surface border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-primary"
+                            placeholder="Search users..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -90,6 +102,7 @@ export default function UserManagementPage() {
                         <tr>
                             <th className="p-4">User</th>
                             <th className="p-4">Role</th>
+                            <th className="p-4">Trust Score</th>
                             <th className="p-4">Status</th>
                             <th className="p-4 text-right">Actions</th>
                         </tr>
@@ -112,6 +125,11 @@ export default function UserManagementPage() {
                                         <option value="coordinator">Coordinator</option>
                                         <option value="admin">Admin</option>
                                     </select>
+                                </td>
+                                <td className="p-4">
+                                    <div className="font-mono text-primary font-bold">
+                                        {user.civic_points || 0}
+                                    </div>
                                 </td>
                                 <td className="p-4">
                                     <div className="flex flex-col gap-1">

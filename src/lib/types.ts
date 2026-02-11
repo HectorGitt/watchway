@@ -4,13 +4,13 @@ export type UserRole = 'citizen' | 'coordinator' | 'admin';
 
 export interface User {
   id: string;
-  username: string;
   email: string;
-  role: UserRole;
-  state_of_residence: string;
-  lga: string;
+  username?: string;
+  role: "citizen" | "coordinator" | "admin";
+  is_active: boolean;
   is_verified: boolean;
   is_suspended: boolean;
+  civic_points: number;
 }
 
 export interface Report {

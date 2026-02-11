@@ -168,9 +168,10 @@ export const api = {
     },
 
     // --- Admin API ---
-    getUsers: async (token: string, filters?: { role?: string }) => {
+    getUsers: async (token: string, filters?: { role?: string, sort_by?: string }) => {
         const params = new URLSearchParams();
         if (filters?.role) params.append("role", filters.role);
+        if (filters?.sort_by) params.append("sort_by", filters.sort_by);
 
         const res = await fetch(`${API_URL}/users/?${params.toString()}`, {
             headers: { "Authorization": `Bearer ${token}` }
@@ -194,6 +195,27 @@ export const api = {
             headers: { "Authorization": `Bearer ${token}` }
         });
         if (!res.ok) throw new Error("Failed to suspend user");
+        return res.json();
+    },
+
+    getSystemSettings: async (token: string) => {
+        const res = await fetch(`${API_URL}/admin/settings`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to load settings");
+        return res.json();
+    },
+
+    updateSystemSetting: async (token: string, key: string, value: string, description?: string) => {
+        const res = await fetch(`${API_URL}/admin/settings`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ key, value, description }),
+        });
+        if (!res.ok) throw new Error("Failed to update setting");
         return res.json();
     }
 };

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useRouter, usePathname } from "next/navigation";
-import { Loader2, LayoutDashboard, Users, LogOut, ShieldAlert } from "lucide-react";
+import { Loader2, LayoutDashboard, Users, LogOut, ShieldAlert, Settings } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -38,6 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const navItems = [
         { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
         { href: "/admin/users", label: "User Management", icon: Users },
+        { href: "/admin/settings", label: "System Settings", icon: Settings },
     ];
 
     return (
