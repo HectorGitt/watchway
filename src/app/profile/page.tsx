@@ -9,17 +9,61 @@ import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/animation
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { Modal } from "@/components/ui/modal";
+import { Edit2, Lock, Save } from "lucide-react";
+import { Input } from "@/components/ui/input"; // Assuming we have Input, if not I'll use standard input with classNames
+
 export default function ProfilePage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
+    // Modal states
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+
+    // Form states
+    const [newUsername, setNewUsername] = useState("");
+    const [passwordForm, setPasswordForm] = useState({ old_password: "", new_password: "", confirm_password: "" });
+
     useEffect(() => {
         api.getProfile()
-            .then(setUser)
+            .then(u => {
+                setUser(u);
+                setNewUsername(u.username);
+            })
             .catch(() => router.push('/login'))
             .finally(() => setLoading(false));
     }, [router]);
+
+    const handleUpdateProfile = async () => {
+        try {
+            const updatedUser = await api.updateProfile({ username: newUsername });
+            setUser(updatedUser);
+            toast.success("Profile updated successfully!");
+            setIsEditModalOpen(false);
+        } catch (err: any) {
+            toast.error(err.message);
+        }
+    };
+
+    const handleChangePassword = async () => {
+        if (passwordForm.new_password !== passwordForm.confirm_password) {
+            toast.error("New passwords do not match");
+            return;
+        }
+        try {
+            await api.updatePassword({
+                old_password: passwordForm.old_password,
+                new_password: passwordForm.new_password
+            });
+            toast.success("Password changed successfully!");
+            setIsPasswordModalOpen(false);
+            setPasswordForm({ old_password: "", new_password: "", confirm_password: "" });
+        } catch (err: any) {
+            toast.error(err.message);
+        }
+    };
 
     if (loading) {
         return (
@@ -56,28 +100,40 @@ export default function ProfilePage() {
                         <div className="flex items-center gap-2 mb-1 justify-center relative group">
                             <h2 className="text-2xl font-bold">{user.username || "Citizen"}</h2>
                             <button
-                                onClick={() => {
-                                    const newName = prompt("Enter new username:", user.username);
-                                    if (newName && newName !== user.username) {
-                                        api.updateProfile({ username: newName })
-                                            .then((updatedUser) => {
-                                                setUser(updatedUser);
-                                                toast.success("Username updated!");
-                                            })
-                                            .catch((err) => toast.error(err.message));
-                                    }
-                                }}
-                                className="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-primary transition-all"
-                                title="Edit Username"
+                                onClick={() => setIsEditModalOpen(true)}
+                                className="p-1.5 rounded-full bg-white/5 hover:bg-primary/20 text-gray-400 hover:text-primary transition-all"
+                                title="Edit Profile"
                             >
-                                ✏️
+                                <Edit2 className="h-3.5 w-3.5" />
                             </button>
                         </div>
                         <p className="text-gray-400 text-sm mb-4">{user.email}</p>
 
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold uppercase tracking-wide">
-                            <ShieldCheck className="h-3 w-3" />
-                            {user.is_verified ? "Verified Citizen" : "Unverified"}
+                        <div className="flex gap-2">
+                            {user.role === 'admin' ? (
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-wide">
+                                    <ShieldCheck className="h-3 w-3" />
+                                    Administrator
+                                </div>
+                            ) : user.role === 'coordinator' ? (
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wide">
+                                    <ShieldCheck className="h-3 w-3" />
+                                    Coordinator
+                                </div>
+                            ) : (
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold uppercase tracking-wide">
+                                    <ShieldCheck className="h-3 w-3" />
+                                    {user.is_verified ? "Verified Citizen" : "Unverified"}
+                                </div>
+                            )}
+
+                            <button
+                                onClick={() => setIsPasswordModalOpen(true)}
+                                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 text-xs font-bold uppercase tracking-wide transition-colors"
+                            >
+                                <Lock className="h-3 w-3" />
+                                Password
+                            </button>
                         </div>
                     </div>
 
@@ -148,6 +204,74 @@ export default function ProfilePage() {
                     )}
                 </FadeIn>
             </div>
+
+            {/* Edit Profile Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                title="Edit Profile"
+            >
+                <div className="space-y-4">
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">Username</label>
+                        <input
+                            type="text"
+                            value={newUsername}
+                            onChange={(e) => setNewUsername(e.target.value)}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                            placeholder="Enter username"
+                        />
+                    </div>
+                    <Button onClick={handleUpdateProfile} className="w-full">
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                    </Button>
+                </div>
+            </Modal>
+
+            {/* Change Password Modal */}
+            <Modal
+                isOpen={isPasswordModalOpen}
+                onClose={() => setIsPasswordModalOpen(false)}
+                title="Change Password"
+            >
+                <div className="space-y-4">
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">Current Password</label>
+                        <input
+                            type="password"
+                            value={passwordForm.old_password}
+                            onChange={(e) => setPasswordForm({ ...passwordForm, old_password: e.target.value })}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                            placeholder="••••••••"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">New Password</label>
+                        <input
+                            type="password"
+                            value={passwordForm.new_password}
+                            onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                            placeholder="••••••••"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">Confirm New Password</label>
+                        <input
+                            type="password"
+                            value={passwordForm.confirm_password}
+                            onChange={(e) => setPasswordForm({ ...passwordForm, confirm_password: e.target.value })}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                            placeholder="••••••••"
+                        />
+                    </div>
+                    <Button onClick={handleChangePassword} className="w-full">
+                        <Save className="h-4 w-4 mr-2" />
+                        Update Password
+                    </Button>
+                </div>
+            </Modal>
         </div>
     );
 }
