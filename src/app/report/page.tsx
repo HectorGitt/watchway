@@ -25,6 +25,7 @@ export default function ReportPage() {
     const [description, setDescription] = useState("");
     const [address, setAddress] = useState<string>("Locating...");
     const [jurisdiction, setJurisdiction] = useState<'FEDERAL' | 'STATE' | 'UNKNOWN'>('UNKNOWN');
+    const [severity, setSeverity] = useState<number>(3);
 
     const handleLocation = async (loc: { lat: number; lng: number }) => {
         setCoords(loc);
@@ -63,7 +64,8 @@ export default function ReportPage() {
                 lng: coords?.lng || 0,
                 address: address, // Used detected address
                 state: "Lagos", // Ideally this comes from geocode too, but defaulting for now
-                live_image_url: liveImage || ""
+                live_image_url: liveImage || "",
+                severity_level: severity
             });
             setStep('success');
         } catch (err) {
@@ -196,6 +198,28 @@ export default function ReportPage() {
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
                                 />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-2">
+                                    Severity Level: <span className="text-primary font-bold">{severity}</span>
+                                    <span className="text-xs text-gray-500 ml-2 font-normal">
+                                        (1 = Low, 5 = Critical)
+                                    </span>
+                                </label>
+                                <input
+                                    type="range"
+                                    min="1"
+                                    max="5"
+                                    step="1"
+                                    value={severity}
+                                    onChange={(e) => setSeverity(parseInt(e.target.value))}
+                                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary"
+                                />
+                                <div className="flex justify-between text-[10px] text-gray-500 mt-1">
+                                    <span>Low Impact</span>
+                                    <span>High Danger</span>
+                                </div>
                             </div>
 
                             <Button type="submit" disabled={isSubmitting} size="lg" className="w-full text-lg">

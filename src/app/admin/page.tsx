@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Users, AlertTriangle, CheckCircle, FileText, UserPlus, ArrowUpRight, Activity } from "lucide-react";
+import { Users, AlertTriangle, CheckCircle, FileText, UserPlus, ArrowUpRight, Activity, Share2, UserCog, Settings } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -231,5 +231,4 @@ export default function AdminDashboardPage() {
     );
 }
 
-// Missing imports
-import { UserCog, Settings, Share2 } from "lucide-react";
+
