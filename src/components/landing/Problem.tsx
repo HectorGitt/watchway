@@ -29,7 +29,7 @@ export function Problem() {
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center max-w-3xl mx-auto mb-20">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Nigeria Deserves Better Than <span className="text-danger">"Death Traps."</span></h2>
+                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Nigeria Deserves Better Than <span className="text-red-500">"Death Traps."</span></h2>
                     <p className="text-xl text-gray-400">The current system thrives on ambiguity. We are building the transparency engine to stop it.</p>
                 </div>
 
