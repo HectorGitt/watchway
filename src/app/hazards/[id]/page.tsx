@@ -14,7 +14,9 @@ import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
 
 export default function HazardDetailPage() {
-    // ... params, router
+    const params = useParams();
+    const id = params?.id as string;
+    const router = useRouter();
     const [report, setReport] = useState<any>(null);
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -26,9 +28,47 @@ export default function HazardDetailPage() {
     const [resolveImageUrl, setResolveImageUrl] = useState("");
     const [resolving, setResolving] = useState(false);
 
-    // ... useEffect
+    useEffect(() => {
+        api.getReport(id).then(setReport).catch(console.error);
+        api.getProfile().then(setUser).catch(console.error);
+        setLoading(false);
+    }, [id]);
 
-    // ... handleShare, handleVerify
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+        toast.success("Link copied to clipboard!");
+    };
+
+    const handleVerify = () => {
+        setVerifying(true);
+        // GPS Check for verification
+        if (!navigator.geolocation) {
+            toast.error("Geolocation is not supported by your browser");
+            setVerifying(false);
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+                try {
+                    const updated = await api.verifyReport(id, latitude, longitude);
+                    setReport(updated);
+                    toast.success("Report verified successfully!");
+                } catch (e: any) {
+                    toast.error(e.message);
+                } finally {
+                    setVerifying(false);
+                }
+            },
+            () => {
+                toast.error("Unable to retrieve your location for verification");
+                setVerifying(false);
+            }
+        );
+    };
 
     const handleResolve = async () => {
         setResolving(true);
