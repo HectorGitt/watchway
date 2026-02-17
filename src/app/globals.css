@@ -37,3 +37,16 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
+
+/* Leaflet Dark Mode Overrides */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #1E1E1E !important;
+  color: #e5e5e5 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.leaflet-popup-content {
+  margin: 10px !important;
+}

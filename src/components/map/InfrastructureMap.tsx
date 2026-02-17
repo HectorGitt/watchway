@@ -64,9 +64,9 @@ export default function InfrastructureMap({
                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white mb-2 inline-block ${report.jurisdiction === 'FEDERAL' ? 'bg-red-600' : 'bg-orange-500'}`}>
                                 {report.jurisdiction}
                             </span>
-                            <h3 className="font-bold text-gray-900 text-sm">{report.title}</h3>
-                            <p className="text-xs text-gray-600 my-1">{report.description}</p>
-                            <p className="text-[10px] text-gray-400">{report.location.address}</p>
+                            <h3 className="font-bold text-white text-sm">{report.title}</h3>
+                            <p className="text-xs text-gray-300 my-1">{report.description}</p>
+                            <p className="text-[10px] text-gray-500">{report.location.address}</p>
                         </div>
                     </Popup>
                 </Marker>

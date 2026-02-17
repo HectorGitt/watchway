@@ -17,7 +17,7 @@ export function MapSidebar({ reports }: MapSidebarProps) {
         <div className="w-full md:w-96 bg-surface h-full border-r border-white/5 flex flex-col z-10 glass">
             <div className="p-6 border-b border-white/5">
                 <Link href="/" className="flex items-center gap-2 mb-6 group">
-                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                    <span className="text-xl font-bold text-white">
                         WatchWay<span className="text-primary">.NG</span>
                     </span>
                 </Link>
