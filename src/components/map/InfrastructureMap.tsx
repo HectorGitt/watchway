@@ -30,11 +30,65 @@ const createIcon = (jurisdiction: string) => {
     });
 };
 
+// Internal component to handle Map interactions
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+
+const FlyToMarker = ({ report }: { report: Report }) => {
+    const map = useMap();
+    return (
+        <Marker
+            position={[report.location.lat, report.location.lng]}
+            icon={createIcon(report.jurisdiction)}
+            eventHandlers={{
+                click: () => {
+                    map.flyTo([report.location.lat, report.location.lng], 16, {
+                        duration: 1.5
+                    });
+                },
+            }}
+        >
+            <Popup className="glass-popup">
+                <div className="p-1 min-w-[150px]">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white mb-2 inline-block ${report.jurisdiction === 'FEDERAL' ? 'bg-red-600' : 'bg-orange-500'}`}>
+                        {report.jurisdiction}
+                    </span>
+                    <h3 className="font-bold text-white text-sm">{report.title}</h3>
+                    <p className="text-xs text-gray-300 my-1">{report.description}</p>
+                    <p className="text-[10px] text-gray-500 mb-2">{report.location.address}</p>
+
+                    <Link href={`/hazards/${report.id}`} className="block">
+                        <div className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold py-1.5 px-3 rounded text-center transition-colors flex items-center justify-center gap-1">
+                            View Details <ArrowRight className="h-3 w-3" />
+                        </div>
+                    </Link>
+                </div>
+            </Popup>
+        </Marker>
+    );
+};
+
+// Controller to handle map state changes from outside
+const MapController = ({ focusLocation }: { focusLocation: { lat: number, lng: number } | null }) => {
+    const map = useMap();
+
+    useEffect(() => {
+        if (focusLocation) {
+            map.flyTo([focusLocation.lat, focusLocation.lng], 16, {
+                duration: 1.5
+            });
+        }
+    }, [focusLocation, map]);
+
+    return null;
+};
+
 export default function InfrastructureMap({
     reports,
     initialCenter = [6.5244, 3.3792], // Default to Lagos
-    initialZoom = 11
-}: MapProps) {
+    initialZoom = 11,
+    focusLocation = null
+}: MapProps & { focusLocation?: { lat: number, lng: number } | null }) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -54,23 +108,9 @@ export default function InfrastructureMap({
             />
 
             {reports.map((report) => (
-                <Marker
-                    key={report.id}
-                    position={[report.location.lat, report.location.lng]}
-                    icon={createIcon(report.jurisdiction)}
-                >
-                    <Popup className="glass-popup">
-                        <div className="p-1">
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white mb-2 inline-block ${report.jurisdiction === 'FEDERAL' ? 'bg-red-600' : 'bg-orange-500'}`}>
-                                {report.jurisdiction}
-                            </span>
-                            <h3 className="font-bold text-white text-sm">{report.title}</h3>
-                            <p className="text-xs text-gray-300 my-1">{report.description}</p>
-                            <p className="text-[10px] text-gray-500">{report.location.address}</p>
-                        </div>
-                    </Popup>
-                </Marker>
+                <FlyToMarker key={report.id} report={report} />
             ))}
+            <MapController focusLocation={focusLocation} />
         </PacketMap>
     );
 }

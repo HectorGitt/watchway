@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { MOCK_REPORTS } from "@/lib/mock-data";
 import { MapSidebar } from "@/components/map/MapSidebar";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 // Dynamically import the Map component with no SSR
 const InfrastructureMap = dynamic(
@@ -17,15 +17,20 @@ const InfrastructureMap = dynamic(
 export default function MapPage() {
     // In a real app, we would fetch fresh reports here
     const reports = useMemo(() => MOCK_REPORTS, []);
+    const [focusLocation, setFocusLocation] = useState<{ lat: number, lng: number } | null>(null);
+
+    const handleReportClick = (report: any) => {
+        setFocusLocation({ lat: report.location.lat, lng: report.location.lng });
+    };
 
     return (
         <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-background text-foreground">
             {/* Sidebar with Stats */}
-            <MapSidebar reports={reports} />
+            <MapSidebar reports={reports} onReportClick={handleReportClick} />
 
             {/* Main Map Area */}
             <div className="flex-1 relative h-full">
-                <InfrastructureMap reports={reports} />
+                <InfrastructureMap reports={reports} focusLocation={focusLocation} />
 
                 {/* Floating Legend / Info for Mobile if needed */}
                 <div className="absolute bottom-6 right-6 z-[400] bg-surface/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl max-w-xs hidden md:block">
