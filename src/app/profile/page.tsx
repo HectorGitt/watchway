@@ -16,6 +16,7 @@ export default function ProfilePage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
 
     // Modal states
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -45,6 +46,7 @@ export default function ProfilePage() {
     }, [router]);
 
     const handleUpdateProfile = async () => {
+        setIsSaving(true);
         try {
             const updatedUser = await api.updateProfile({ username: newUsername });
             setUser(updatedUser);
@@ -52,6 +54,8 @@ export default function ProfilePage() {
             setIsEditModalOpen(false);
         } catch (err: any) {
             toast.error(err.message);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -60,6 +64,7 @@ export default function ProfilePage() {
             toast.error("New passwords do not match");
             return;
         }
+        setIsSaving(true);
         try {
             await api.updatePassword({
                 old_password: passwordForm.old_password,
@@ -70,6 +75,8 @@ export default function ProfilePage() {
             setPasswordForm({ old_password: "", new_password: "", confirm_password: "" });
         } catch (err: any) {
             toast.error(err.message);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -267,9 +274,48 @@ export default function ProfilePage() {
                             placeholder="Enter username"
                         />
                     </div>
-                    <Button onClick={handleUpdateProfile} className="w-full">
-                        <Save className="h-4 w-4 mr-2" />
-                        Save Changes
+                    <Button onClick={handleUpdateProfile} className="w-full" disabled={isSaving}>
+                        {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Save className="h-4 w-4 mr-2" /> Save Changes</>}
+                    </Button>
+                </div>
+            </Modal>
+
+            {/* Password Change Modal */}
+            <Modal
+                isOpen={isPasswordModalOpen}
+                onClose={() => setIsPasswordModalOpen(false)}
+                title="Change Password"
+            >
+                <div className="space-y-4">
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">Current Password</label>
+                        <input
+                            type="password"
+                            value={passwordForm.old_password}
+                            onChange={(e) => setPasswordForm({ ...passwordForm, old_password: e.target.value })}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">New Password</label>
+                        <input
+                            type="password"
+                            value={passwordForm.new_password}
+                            onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-sm text-gray-400 mb-1 block">Confirm New Password</label>
+                        <input
+                            type="password"
+                            value={passwordForm.confirm_password}
+                            onChange={(e) => setPasswordForm({ ...passwordForm, confirm_password: e.target.value })}
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                        />
+                    </div>
+                    <Button onClick={handleChangePassword} className="w-full" disabled={isSaving}>
+                        {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Password"}
                     </Button>
                 </div>
             </Modal>
@@ -301,6 +347,7 @@ export default function ProfilePage() {
                         <Button
                             className="w-full"
                             onClick={async () => {
+                                setIsSaving(true);
                                 try {
                                     const token = localStorage.getItem("token") || "";
                                     await api.applyCoordinator(token);
@@ -311,14 +358,17 @@ export default function ProfilePage() {
                                     setIsApplyModalOpen(false);
                                 } catch (e: any) {
                                     toast.error(e.message);
+                                } finally {
+                                    setIsSaving(false);
                                 }
                             }}
+                            disabled={isSaving}
                         >
-                            Confirm Application
+                            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm Application"}
                         </Button>
                     </div>
                 </div>
-            </Modal>
+            </Modal >
         </div >
     );
 }
