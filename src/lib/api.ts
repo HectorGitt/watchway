@@ -289,5 +289,13 @@ export const api = {
         });
         if (!res.ok) throw new Error("Failed to delete X post");
         return res.json();
+    },
+
+    getAnalytics: async (token: string) => {
+        const res = await fetch(`${API_URL}/admin/analytics`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to load analytics");
+        return res.json();
     }
 };

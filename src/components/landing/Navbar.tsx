@@ -17,12 +17,18 @@ export function Navbar() {
                 setIsLoggedIn(true);
                 try {
                     const profile = await api.getProfile();
+                    console.log("Navbar: Profile loaded:", profile);
                     if (profile.role === 'admin') {
+                        console.log("Navbar: User is admin");
                         setIsAdmin(true);
+                    } else {
+                        console.log("Navbar: User is NOT admin", profile.role);
                     }
                 } catch (e) {
                     console.error("Failed to fetch profile", e);
                 }
+            } else {
+                console.log("Navbar: No token found");
             }
         };
         checkAuth();
