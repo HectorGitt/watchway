@@ -35,7 +35,7 @@ export function Navbar() {
                     <div className="bg-primary/20 p-2 rounded-lg group-hover:bg-primary/30 transition-colors">
                         <ShieldAlert className="h-6 w-6 text-primary" />
                     </div>
-                    <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                    <span className="text-2xl font-bold text-white">
                         WatchWay<span className="text-primary">.NG</span>
                     </span>
                 </Link>

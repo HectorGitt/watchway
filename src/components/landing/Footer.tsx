@@ -4,7 +4,7 @@ export function Footer() {
             <div className="container mx-auto px-4">
                 <div className="grid md:grid-cols-4 gap-8 mb-8">
                     <div>
-                        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 block mb-4">
+                        <span className="text-xl font-bold text-white block mb-4">
                             WatchWay<span className="text-primary">.NG</span>
                         </span>
                         <p className="text-gray-500 text-sm">

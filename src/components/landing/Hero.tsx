@@ -27,11 +27,11 @@ export function Hero() {
                 <StaggerContainer className="mb-10">
                     <StaggerItem>
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8">
-                            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+                            <span className="text-white">
                                 Mapping Every Pothole.
                             </span>
                             <br />
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-orange-600">
+                            <span className="text-primary">
                                 Tracking Every Fix.
                             </span>
                         </h1>
