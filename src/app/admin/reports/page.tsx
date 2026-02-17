@@ -34,6 +34,23 @@ export default function ReportsPage() {
         loadReports();
     }, [filter]); // Reload when filter changes
 
+    // Modal State
+    const [reportToDelete, setReportToDelete] = useState<any>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const handleDeleteXPost = async () => {
+        if (!reportToDelete) return;
+        try {
+            const token = localStorage.getItem("token") || "";
+            await api.deleteXPost(token, reportToDelete.id);
+            toast.success("Post deleted from X");
+            loadReports();
+            setIsDeleteModalOpen(false);
+        } catch (e) {
+            toast.error("Failed to delete post");
+        }
+    };
+
     return (
         <div className="p-8 space-y-6">
             <div className="flex justify-between items-center">
@@ -141,16 +158,9 @@ export default function ReportsPage() {
                                                     size="sm"
                                                     variant="danger"
                                                     className="h-8 text-xs bg-red-500/10 text-red-500 hover:bg-red-500/20 border-red-500/20"
-                                                    onClick={async () => {
-                                                        if (!confirm("Delete this post from X?")) return;
-                                                        try {
-                                                            const token = localStorage.getItem("token") || "";
-                                                            await api.deleteXPost(token, report.id);
-                                                            toast.success("Post deleted from X");
-                                                            loadReports(); // Refresh
-                                                        } catch (e) {
-                                                            toast.error("Failed to delete post");
-                                                        }
+                                                    onClick={() => {
+                                                        setReportToDelete(report);
+                                                        setIsDeleteModalOpen(true);
                                                     }}
                                                 >
                                                     Delete Post
@@ -188,6 +198,41 @@ export default function ReportsPage() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-surface border border-white/10 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col">
+                        <div className="p-6 text-center space-y-4">
+                            <div className="h-12 w-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500 border border-red-500/20">
+                                <AlertTriangle className="h-6 w-6" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold mb-1">Delete Post?</h3>
+                                <p className="text-sm text-gray-400">
+                                    Are you sure you want to delete this post from X (Twitter)? This action cannot be undone.
+                                </p>
+                            </div>
+                            <div className="flex gap-3 pt-2">
+                                <Button
+                                    variant="outline"
+                                    className="w-full"
+                                    onClick={() => setIsDeleteModalOpen(false)}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    className="w-full"
+                                    onClick={handleDeleteXPost}
+                                >
+                                    Delete
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

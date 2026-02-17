@@ -6,6 +6,9 @@ import { Users, AlertTriangle, CheckCircle, FileText, UserPlus, ArrowUpRight, Ac
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+import { toast } from "sonner";
+import { Modal } from "@/components/ui/modal";
+
 export default function AdminDashboardPage() {
     const [stats, setStats] = useState({
         total_users: 0,
@@ -16,20 +19,38 @@ export default function AdminDashboardPage() {
     });
     const [loading, setLoading] = useState(true);
 
+    // Modal State
+    const [reportToDelete, setReportToDelete] = useState<any>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    const loadStats = async () => {
+        try {
+            const token = localStorage.getItem("token") || "";
+            const data = await api.getAdminStats(token);
+            setStats(data);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const loadStats = async () => {
-            try {
-                const token = localStorage.getItem("token") || "";
-                const data = await api.getAdminStats(token);
-                setStats(data);
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setLoading(false);
-            }
-        };
         loadStats();
     }, []);
+
+    const handleDeleteXPost = async () => {
+        if (!reportToDelete) return;
+        try {
+            const token = localStorage.getItem("token") || "";
+            await api.deleteXPost(token, reportToDelete.id);
+            toast.success("Post deleted from X");
+            loadStats();
+            setIsDeleteModalOpen(false);
+        } catch (e) {
+            toast.error("Failed to delete post");
+        }
+    };
 
     const statCards = [
         {
@@ -149,15 +170,9 @@ export default function AdminDashboardPage() {
                                                                 size="sm"
                                                                 variant="danger"
                                                                 className="h-6 px-2 text-[10px]"
-                                                                onClick={async () => {
-                                                                    if (!confirm("Delete X post?")) return;
-                                                                    try {
-                                                                        const token = localStorage.getItem("token") || "";
-                                                                        await api.deleteXPost(token, report.id);
-                                                                        // Refresh stats
-                                                                        const data = await api.getAdminStats(token);
-                                                                        setStats(data);
-                                                                    } catch (e) { console.error(e); }
+                                                                onClick={() => {
+                                                                    setReportToDelete(report);
+                                                                    setIsDeleteModalOpen(true);
                                                                 }}
                                                             >
                                                                 Delete Post
@@ -171,10 +186,12 @@ export default function AdminDashboardPage() {
                                                                     try {
                                                                         const token = localStorage.getItem("token") || "";
                                                                         await api.triggerXPost(token, report.id);
-                                                                        // Refresh stats
-                                                                        const data = await api.getAdminStats(token);
-                                                                        setStats(data);
-                                                                    } catch (e) { console.error(e); }
+                                                                        toast.success("Posted to X successfully");
+                                                                        loadStats();
+                                                                    } catch (e) {
+                                                                        console.error(e);
+                                                                        toast.error("Failed to post to X");
+                                                                    }
                                                                 }}
                                                             >
                                                                 Post to X
@@ -227,6 +244,40 @@ export default function AdminDashboardPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                title="Delete Post?"
+            >
+                <div className="space-y-4">
+                    <div className="text-center">
+                        <div className="h-12 w-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500 border border-red-500/20 mb-4">
+                            <AlertTriangle className="h-6 w-6" />
+                        </div>
+                        <p className="text-sm text-gray-400">
+                            Are you sure you want to delete this post from X (Twitter)? This action cannot be undone.
+                        </p>
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                        <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => setIsDeleteModalOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="danger"
+                            className="w-full"
+                            onClick={handleDeleteXPost}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 }
