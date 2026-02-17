@@ -1,5 +1,15 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
+const getDeviceId = () => {
+    if (typeof window === "undefined") return "server-side";
+    let deviceId = localStorage.getItem("device_id");
+    if (!deviceId) {
+        deviceId = crypto.randomUUID();
+        localStorage.setItem("device_id", deviceId);
+    }
+    return deviceId;
+};
+
 export const api = {
     login: async (email: string, password: string) => {
         const formData = new FormData();
@@ -19,8 +29,6 @@ export const api = {
         }
 
         const data = await res.json();
-        localStorage.setItem("token", data.access_token);
-        return data;
         localStorage.setItem("token", data.access_token);
         return data;
     },
@@ -85,7 +93,8 @@ export const api = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`,
+                "X-Device-Id": getDeviceId()
             },
             body: JSON.stringify({ lat, lng }),
         });
@@ -105,7 +114,8 @@ export const api = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`,
+                "X-Device-Id": getDeviceId()
             },
             body: JSON.stringify(reportData),
         });
