@@ -20,6 +20,7 @@ export default function ProfilePage() {
     // Modal states
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+    const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
     // Form states
     const [newUsername, setNewUsername] = useState("");
@@ -159,19 +160,7 @@ export default function ProfilePage() {
 
                                 {user.coordinator_application_status === 'NONE' && (
                                     <Button
-                                        onClick={async () => {
-                                            if (!confirm("Are you sure you want to apply? This will send a request to the admins.")) return;
-                                            try {
-                                                const token = localStorage.getItem("token") || "";
-                                                await api.applyCoordinator(token);
-                                                toast.success("Application submitted!");
-                                                // Refresh profile
-                                                const updated = await api.getProfile();
-                                                setUser(updated);
-                                            } catch (e: any) {
-                                                toast.error(e.message);
-                                            }
-                                        }}
+                                        onClick={() => setIsApplyModalOpen(true)}
                                         className="w-full sm:w-auto"
                                     >
                                         Apply Now
@@ -285,47 +274,49 @@ export default function ProfilePage() {
                 </div>
             </Modal>
 
-            {/* Change Password Modal */}
+            {/* Apply Coordinator Modal */}
             <Modal
-                isOpen={isPasswordModalOpen}
-                onClose={() => setIsPasswordModalOpen(false)}
-                title="Change Password"
+                isOpen={isApplyModalOpen}
+                onClose={() => setIsApplyModalOpen(false)}
+                title="Apply for Coordinator"
             >
                 <div className="space-y-4">
-                    <div>
-                        <label className="text-sm text-gray-400 mb-1 block">Current Password</label>
-                        <input
-                            type="password"
-                            value={passwordForm.old_password}
-                            onChange={(e) => setPasswordForm({ ...passwordForm, old_password: e.target.value })}
-                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
-                            placeholder="••••••••"
-                        />
+                    <p className="text-sm text-gray-400">
+                        Coordinators play a key role in verifying hazards and managing community safety.
+                        By applying, you agree to:
+                    </p>
+                    <ul className="list-disc list-inside text-sm text-gray-400 space-y-1 ml-2">
+                        <li>Verify reports in your local area</li>
+                        <li>Act responsibly and honestly</li>
+                        <li>Follow community guidelines</li>
+                    </ul>
+                    <div className="pt-4 flex gap-3">
+                        <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => setIsApplyModalOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            className="w-full"
+                            onClick={async () => {
+                                try {
+                                    const token = localStorage.getItem("token") || "";
+                                    await api.applyCoordinator(token);
+                                    toast.success("Application submitted successfully!");
+                                    // Refresh profile
+                                    const updated = await api.getProfile();
+                                    setUser(updated);
+                                    setIsApplyModalOpen(false);
+                                } catch (e: any) {
+                                    toast.error(e.message);
+                                }
+                            }}
+                        >
+                            Confirm Application
+                        </Button>
                     </div>
-                    <div>
-                        <label className="text-sm text-gray-400 mb-1 block">New Password</label>
-                        <input
-                            type="password"
-                            value={passwordForm.new_password}
-                            onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
-                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
-                            placeholder="••••••••"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-sm text-gray-400 mb-1 block">Confirm New Password</label>
-                        <input
-                            type="password"
-                            value={passwordForm.confirm_password}
-                            onChange={(e) => setPasswordForm({ ...passwordForm, confirm_password: e.target.value })}
-                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
-                            placeholder="••••••••"
-                        />
-                    </div>
-                    <Button onClick={handleChangePassword} className="w-full">
-                        <Save className="h-4 w-4 mr-2" />
-                        Update Password
-                    </Button>
                 </div>
             </Modal>
         </div >

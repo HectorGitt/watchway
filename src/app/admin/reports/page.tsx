@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FadeIn } from "@/components/ui/animations";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function ReportsPage() {
     const [reports, setReports] = useState([]);
@@ -45,8 +46,8 @@ export default function ReportsPage() {
                         placeholder="Search reports..."
                         className="w-64 bg-surface border-white/10"
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && loadReports()}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && loadReports()}
                     />
                     <Button onClick={loadReports} variant="outline" className="border-white/10">
                         <Search className="h-4 w-4" />
@@ -59,7 +60,7 @@ export default function ReportsPage() {
                 {['all', 'unverified', 'verified', 'resolved'].map((status) => (
                     <Button
                         key={status}
-                        variant={filter === status ? "default" : "ghost"}
+                        variant={filter === status ? "primary" : "ghost"}
                         onClick={() => setFilter(status)}
                         className="capitalize"
                     >
@@ -103,8 +104,8 @@ export default function ReportsPage() {
                                     <td className="p-4">
                                         <div className="flex flex-col gap-1 items-start">
                                             <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${report.status === 'resolved' ? 'border-green-500/20 text-green-500 bg-green-500/10' :
-                                                    report.status === 'verified' ? 'border-blue-500/20 text-blue-500 bg-blue-500/10' :
-                                                        'border-yellow-500/20 text-yellow-500 bg-yellow-500/10'
+                                                report.status === 'verified' ? 'border-blue-500/20 text-blue-500 bg-blue-500/10' :
+                                                    'border-yellow-500/20 text-yellow-500 bg-yellow-500/10'
                                                 }`}>
                                                 {report.status}
                                             </span>
@@ -145,9 +146,10 @@ export default function ReportsPage() {
                                                         try {
                                                             const token = localStorage.getItem("token") || "";
                                                             await api.deleteXPost(token, report.id);
+                                                            toast.success("Post deleted from X");
                                                             loadReports(); // Refresh
                                                         } catch (e) {
-                                                            alert("Failed to delete post");
+                                                            toast.error("Failed to delete post");
                                                         }
                                                     }}
                                                 >
@@ -163,9 +165,10 @@ export default function ReportsPage() {
                                                         try {
                                                             const token = localStorage.getItem("token") || "";
                                                             await api.triggerXPost(token, report.id);
+                                                            toast.success("Posted to X successfully");
                                                             loadReports(); // Refresh
                                                         } catch (e) {
-                                                            alert("Failed to post to X");
+                                                            toast.error("Failed to post to X");
                                                         }
                                                     }}
                                                 >
