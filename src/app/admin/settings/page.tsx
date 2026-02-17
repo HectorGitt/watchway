@@ -74,22 +74,40 @@ export default function AdminSettingsPage() {
 
                             <div className="flex gap-4">
                                 <div className="flex-1">
-                                    <input
-                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
-                                        defaultValue={setting.value}
-                                        id={`input-${setting.key}`}
-                                    />
+                                    {setting.key === 'auto_post_x' ? (
+                                        <div className="flex items-center gap-2 h-full">
+                                            <Button
+                                                variant={setting.value === 'true' ? undefined : 'outline'}
+                                                onClick={() => handleSave(setting.key, setting.value === 'true' ? 'false' : 'true', setting.description)}
+                                                disabled={saving === setting.key}
+                                                className={setting.value === 'true' ? 'bg-green-600 hover:bg-green-700' : ''}
+                                            >
+                                                {setting.value === 'true' ? 'Enabled' : 'Disabled'}
+                                            </Button>
+                                            <span className="text-xs text-gray-500">
+                                                {setting.value === 'true' ? 'System will auto-post verified hazards to X.' : 'Auto-posting is off.'}
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <input
+                                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                            defaultValue={setting.value}
+                                            id={`input-${setting.key}`}
+                                        />
+                                    )}
                                 </div>
-                                <Button
-                                    onClick={() => {
-                                        const input = document.getElementById(`input-${setting.key}`) as HTMLInputElement;
-                                        handleSave(setting.key, input.value, setting.description);
-                                    }}
-                                    disabled={saving === setting.key}
-                                >
-                                    {saving === setting.key ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                                    Save
-                                </Button>
+                                {setting.key !== 'auto_post_x' && (
+                                    <Button
+                                        onClick={() => {
+                                            const input = document.getElementById(`input-${setting.key}`) as HTMLInputElement;
+                                            handleSave(setting.key, input.value, setting.description);
+                                        }}
+                                        disabled={saving === setting.key}
+                                    >
+                                        {saving === setting.key ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                                        Save
+                                    </Button>
+                                )}
                             </div>
                             {setting.key === 'proximity_radius_km' && (
                                 <div className="mt-2 text-xs text-primary flex items-center gap-1">

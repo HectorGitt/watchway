@@ -135,17 +135,70 @@ export default function AdminDashboardPage() {
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex justify-between">
-                                            <p className="font-medium text-white truncate">{report.title}</p>
-                                            <span className="text-xs text-gray-500">{new Date(report.created_at).toLocaleDateString()}</span>
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <p className="font-medium text-white truncate">{report.title}</p>
+                                                <p className="text-xs text-gray-400 truncate">{report.address}</p>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                {/* X Controls */}
+                                                {(report.status === 'verified' || report.status === 'resolved') && (
+                                                    <div className="flex items-center gap-1">
+                                                        {report.x_post_id ? (
+                                                            <Button
+                                                                size="sm"
+                                                                variant="danger"
+                                                                className="h-6 px-2 text-[10px]"
+                                                                onClick={async () => {
+                                                                    if (!confirm("Delete X post?")) return;
+                                                                    try {
+                                                                        const token = localStorage.getItem("token") || "";
+                                                                        await api.deleteXPost(token, report.id);
+                                                                        // Refresh stats
+                                                                        const data = await api.getAdminStats(token);
+                                                                        setStats(data);
+                                                                    } catch (e) { console.error(e); }
+                                                                }}
+                                                            >
+                                                                Delete Post
+                                                            </Button>
+                                                        ) : (
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                className="h-6 px-2 text-[10px] border-white/10 hover:bg-blue-500/20 hover:text-blue-400"
+                                                                onClick={async () => {
+                                                                    try {
+                                                                        const token = localStorage.getItem("token") || "";
+                                                                        await api.triggerXPost(token, report.id);
+                                                                        // Refresh stats
+                                                                        const data = await api.getAdminStats(token);
+                                                                        setStats(data);
+                                                                    } catch (e) { console.error(e); }
+                                                                }}
+                                                            >
+                                                                Post to X
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                <div className={`px-2 py-1 rounded text-[10px] uppercase font-bold border h-fit ${report.status === 'resolved' ? 'border-green-500/20 text-green-500 bg-green-500/10' :
+                                                    report.status === 'verified' ? 'border-blue-500/20 text-blue-500 bg-blue-500/10' :
+                                                        'border-yellow-500/20 text-yellow-500 bg-yellow-500/10'
+                                                    }`}>
+                                                    {report.status}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <p className="text-xs text-gray-400 truncate">{report.address}</p>
-                                    </div>
-                                    <div className={`px-2 py-1 rounded text-[10px] uppercase font-bold border ${report.status === 'resolved' ? 'border-green-500/20 text-green-500 bg-green-500/10' :
-                                            report.status === 'verified' ? 'border-blue-500/20 text-blue-500 bg-blue-500/10' :
-                                                'border-yellow-500/20 text-yellow-500 bg-yellow-500/10'
-                                        }`}>
-                                        {report.status}
+                                        <div className="flex justify-between items-end mt-1">
+                                            <span className="text-xs text-gray-500">{new Date(report.created_at).toLocaleDateString()}</span>
+                                            {report.x_post_id && (
+                                                <span className="text-[10px] text-blue-400 flex items-center gap-1">
+                                                    <Share2 className="h-3 w-3" /> Posted {report.x_post_id.substring(0, 8)}...
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             ))
@@ -179,4 +232,4 @@ export default function AdminDashboardPage() {
 }
 
 // Missing imports
-import { UserCog, Settings } from "lucide-react";
+import { UserCog, Settings, Share2 } from "lucide-react";

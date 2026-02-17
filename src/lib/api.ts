@@ -271,5 +271,23 @@ export const api = {
         });
         if (!res.ok) throw new Error("Failed to load admin stats");
         return res.json();
+    },
+
+    triggerXPost: async (token: string, reportId: string) => {
+        const res = await fetch(`${API_URL}/reports/${reportId}/x-post`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to post to X");
+        return res.json();
+    },
+
+    deleteXPost: async (token: string, reportId: string) => {
+        const res = await fetch(`${API_URL}/reports/${reportId}/x-post`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to delete X post");
+        return res.json();
     }
 };
