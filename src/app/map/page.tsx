@@ -1,9 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { MOCK_REPORTS } from "@/lib/mock-data";
+import { api } from "@/lib/api";
+import { Report } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { MapSidebar } from "@/components/map/MapSidebar";
-import { useMemo, useState } from "react";
 
 // Dynamically import the Map component with no SSR
 const InfrastructureMap = dynamic(
@@ -15,9 +17,25 @@ const InfrastructureMap = dynamic(
 );
 
 export default function MapPage() {
-    // In a real app, we would fetch fresh reports here
-    const reports = useMemo(() => MOCK_REPORTS, []);
+    const [reports, setReports] = useState<Report[]>([]);
+    const [loading, setLoading] = useState(true);
     const [focusLocation, setFocusLocation] = useState<{ lat: number, lng: number } | null>(null);
+
+    useEffect(() => {
+        const fetchReports = async () => {
+            try {
+                const data = await api.getReports({});
+                setReports(data);
+            } catch (error) {
+                console.error("Failed to fetch reports:", error);
+                toast.error("Failed to load map data");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReports();
+    }, []);
 
     const handleReportClick = (report: any) => {
         setFocusLocation({ lat: report.location.lat, lng: report.location.lng });

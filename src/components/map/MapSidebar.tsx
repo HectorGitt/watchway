@@ -59,7 +59,11 @@ export function MapSidebar({ reports, onReportClick }: MapSidebarProps) {
                 {reports.map(report => (
                     <div
                         key={report.id}
-                        onClick={() => onReportClick?.(report)}
+                        onClick={() => {
+                            if (report.location && report.location.lat && report.location.lng) {
+                                onReportClick?.(report);
+                            }
+                        }}
                         className="p-4 rounded-lg bg-white/5 border border-white/5 hover:border-primary/50 transition-all cursor-pointer group hover:bg-white/10"
                     >
                         <div className="flex justify-between items-start mb-2">

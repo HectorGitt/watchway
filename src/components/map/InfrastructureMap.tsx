@@ -100,14 +100,21 @@ export default function InfrastructureMap({
     }
 
     return (
-        <PacketMap center={initialCenter} zoom={initialZoom} scrollWheelZoom={true} className="w-full h-full z-0">
+        <PacketMap
+            key={`${initialCenter[0]}-${initialCenter[1]}-${initialZoom}`}
+            center={initialCenter}
+            zoom={initialZoom}
+            scrollWheelZoom={true}
+            className="w-full h-full z-0"
+            style={{ width: "100%", height: "100%" }}
+        >
             {/* Dark Mode Map Style (CartoDB Dark Matter) */}
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             />
 
-            {reports.map((report) => (
+            {reports.filter(r => r.location && r.location.lat && r.location.lng).map((report) => (
                 <FlyToMarker key={report.id} report={report} />
             ))}
             <MapController focusLocation={focusLocation} />

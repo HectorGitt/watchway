@@ -10,6 +10,20 @@ const getDeviceId = () => {
     return deviceId;
 };
 
+// Helper to transform backend flat structure to frontend nested structure
+const transformReport = (data: any) => {
+    return {
+        ...data,
+        location: {
+            lat: data.lat,
+            lng: data.lng,
+            address: data.address,
+            state: data.state,
+            lga: "Unknown" // Backend does not store LGA currently
+        }
+    };
+};
+
 export const api = {
     login: async (email: string, password: string) => {
         const formData = new FormData();
@@ -76,13 +90,15 @@ export const api = {
 
         const res = await fetch(`${API_URL}/reports/?${params.toString()}`);
         if (!res.ok) throw new Error("Failed to load reports");
-        return res.json();
+        const data = await res.json();
+        return data.map(transformReport);
     },
 
     getReport: async (id: string) => {
         const res = await fetch(`${API_URL}/reports/${id}`);
         if (!res.ok) throw new Error("Report not found");
-        return res.json();
+        const data = await res.json();
+        return transformReport(data);
     },
 
     verifyReport: async (id: string, lat?: number, lng?: number) => {
@@ -103,12 +119,17 @@ export const api = {
             const err = await res.json();
             throw new Error(err.detail || "Verification failed");
         }
-        return res.json();
+        const data = await res.json();
+        return transformReport(data);
     },
 
     submitReport: async (reportData: any) => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Not authenticated");
+
+        // Transform frontend structure to backend structure if needed
+        // Assuming the UI sends data matching the backend expectation or close to it.
+        // But the response will be a backend report, so we need to transform the *response*.
 
         const res = await fetch(`${API_URL}/reports/`, {
             method: "POST",
@@ -123,7 +144,8 @@ export const api = {
         if (!res.ok) {
             throw new Error("Failed to submit report");
         }
-        return res.json();
+        const data = await res.json();
+        return transformReport(data);
     },
 
     resolveReport: async (id: string, afterImageUrl: string, lat?: number, lng?: number) => {
@@ -142,7 +164,8 @@ export const api = {
             const err = await res.json();
             throw new Error(err.detail || "Resolution failed");
         }
-        return res.json();
+        const data = await res.json();
+        return transformReport(data);
     },
 
     getProfile: async () => {
