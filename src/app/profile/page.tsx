@@ -94,9 +94,9 @@ export default function ProfilePage() {
         <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Header */}
             <div className="p-4 border-b border-white/5 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur z-50">
-                <Link href="/map" className="text-gray-400 hover:text-white">
+                <button onClick={() => router.back()} className="text-gray-400 hover:text-white">
                     <ArrowLeft className="h-6 w-6" />
-                </Link>
+                </button>
                 <h1 className="font-bold text-lg">My Profile</h1>
                 <div className="w-6"></div>
             </div>

@@ -44,9 +44,9 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-background text-foreground flex flex-col justify-center items-center p-4">
             <FadeIn className="w-full max-w-md bg-surface border border-white/5 p-8 rounded-2xl shadow-2xl backdrop-blur-xl">
-                <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 text-sm">
-                    <ArrowLeft className="h-4 w-4" /> Back to Home
-                </Link>
+                <button onClick={() => router.back()} className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 text-sm">
+                    <ArrowLeft className="h-4 w-4" /> Back
+                </button>
 
                 <h1 className="text-3xl font-bold mb-2">
                     {isLogin ? "Welcome Back" : "Join the Watch"}

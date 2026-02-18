@@ -6,6 +6,7 @@ import { CameraCapture } from "@/components/report/CameraCapture";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2, CheckCircle2, MapPin } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { determineJurisdiction } from "@/lib/jurisdiction";
 import { api } from "@/lib/api";
 import { FadeIn } from "@/components/ui/animations";
@@ -14,6 +15,7 @@ import { toast } from "sonner";
 type Step = 'location' | 'photo' | 'details' | 'success';
 
 export default function ReportPage() {
+    const router = useRouter();
     const [step, setStep] = useState<Step>('location');
     const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
     const [liveImage, setLiveImage] = useState<string | null>(null);
@@ -80,9 +82,9 @@ export default function ReportPage() {
         <div className="min-h-screen bg-background text-foreground flex flex-col">
             {/* Header */}
             <div className="p-4 border-b border-white/5 flex items-center justify-between">
-                <Link href="/" className="text-gray-400 hover:text-white">
+                <button onClick={() => router.back()} className="text-gray-400 hover:text-white">
                     <ArrowLeft className="h-6 w-6" />
-                </Link>
+                </button>
                 <h1 className="font-bold text-lg">New Hazard Report</h1>
                 <div className="w-6"></div> {/* Spacer */}
             </div>

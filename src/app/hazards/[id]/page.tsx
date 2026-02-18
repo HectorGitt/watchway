@@ -124,9 +124,9 @@ export default function HazardDetailPage() {
             {/* Header ... */}
             <div className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b border-white/5 p-4">
                 <div className="container mx-auto px-4 max-w-4xl flex items-center justify-between">
-                    <Link href="/hazards" className="text-gray-400 hover:text-white flex items-center gap-2">
-                        <ArrowLeft className="h-5 w-5" /> Back to Registry
-                    </Link>
+                    <button onClick={() => router.back()} className="text-gray-400 hover:text-white flex items-center gap-2">
+                        <ArrowLeft className="h-5 w-5" /> Back
+                    </button>
                     <Button variant="outline" size="sm" onClick={handleShare} className="gap-2">
                         {copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
                         {copied ? "Copied" : "Share"}

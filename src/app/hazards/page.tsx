@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/animations";
 import { ArrowLeft, Search, MapPin, AlertTriangle, Filter, Loader2, CheckCircle2, Clock } from "lucide-react";
@@ -8,6 +9,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default function HazardsPage() {
+    const router = useRouter();
     const [reports, setReports] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -47,9 +49,9 @@ export default function HazardsPage() {
             <div className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b border-white/5 p-4">
                 <div className="container mx-auto px-4 max-w-5xl">
                     <div className="flex items-center justify-between mb-4">
-                        <Link href="/" className="text-gray-400 hover:text-white flex items-center gap-2">
+                        <button onClick={() => router.back()} className="text-gray-400 hover:text-white flex items-center gap-2">
                             <ArrowLeft className="h-5 w-5" /> Back
-                        </Link>
+                        </button>
                         <h1 className="text-xl font-bold">Hazard Registry</h1>
                         <Link href="/report">
                             <Button size="sm" className="hidden sm:flex">Report New</Button>
