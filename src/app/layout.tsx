@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -9,6 +9,13 @@ const outfit = Outfit({
 	variable: "--font-outfit",
 	display: "swap",
 });
+
+export const viewport: Viewport = {
+	themeColor: "#050A18",
+	width: "device-width",
+	initialScale: 1,
+	maximumScale: 1,
+};
 
 export const metadata: Metadata = {
 	title: "WatchWay Nigeria | Infrastructure Map",
@@ -47,6 +54,20 @@ export default function RootLayout({
 
             gtag('config', 'G-T7SR7G3ST4');
           `}
+				</Script>
+				{/* PWA Service Worker Registration */}
+				<Script id="pwa-register" strategy="afterInteractive">
+					{`
+                                  if ('serviceWorker' in navigator) {
+                                    window.addEventListener('load', function() {
+                                      navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                                        console.log('ServiceWorker registration successful');
+                                      }, function(err) {
+                                        console.log('ServiceWorker registration failed: ', err);
+                                      });
+                                    });
+                                  }
+                                `}
 				</Script>
 			</head>
 			<body
