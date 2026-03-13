@@ -101,6 +101,16 @@ export const api = {
 		return res.json();
 	},
 
+	joinWaitlist: async (email: string) => {
+		const res = await fetch(`${API_URL}/waitlist/`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ email }),
+		});
+		if (!res.ok) throw new Error("Failed to join waitlist");
+		return res.json();
+	},
+
 	getReports: async (filters: {
 		status?: string;
 		state?: string;
