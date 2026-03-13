@@ -115,7 +115,10 @@ export const api = {
 
 	verifyReport: async (id: string, lat?: number, lng?: number) => {
 		const token = localStorage.getItem("token");
-		if (!token) throw new Error("Not authenticated");
+		if (!token) {
+			if (typeof window !== "undefined") window.location.href = "/login";
+			throw new Error("Not authenticated");
+		}
 
 		const res = await fetch(`${API_URL}/reports/${id}/verify`, {
 			method: "POST",
@@ -127,6 +130,12 @@ export const api = {
 			body: JSON.stringify({ lat, lng }),
 		});
 
+		if (res.status === 401) {
+			localStorage.removeItem("token");
+			if (typeof window !== "undefined") window.location.href = "/login";
+			throw new Error("Session expired. Please log in again.");
+		}
+
 		if (!res.ok) {
 			const err = await res.json();
 			throw new Error(err.detail || "Verification failed");
@@ -137,7 +146,12 @@ export const api = {
 
 	submitReport: async (reportData: any) => {
 		const token = localStorage.getItem("token");
-		if (!token) throw new Error("Not authenticated");
+		if (!token) {
+			if (typeof window !== "undefined") {
+				window.location.href = "/login";
+			}
+			throw new Error("Not authenticated");
+		}
 
 		// Transform frontend structure to backend structure if needed
 		// Assuming the UI sends data matching the backend expectation or close to it.
@@ -152,6 +166,12 @@ export const api = {
 			},
 			body: JSON.stringify(reportData),
 		});
+
+		if (res.status === 401) {
+			localStorage.removeItem("token");
+			if (typeof window !== "undefined") window.location.href = "/login";
+			throw new Error("Session expired. Please log in again.");
+		}
 
 		if (!res.ok) {
 			throw new Error("Failed to submit report");
