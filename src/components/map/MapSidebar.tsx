@@ -23,8 +23,8 @@ export function MapSidebar({ reports, onReportClick }: MapSidebarProps) {
 	const criticalCount = reports.filter((r) => r.severity_level >= 8).length;
 
 	return (
-		<div className="w-full md:w-96 bg-surface h-full border-r border-white/5 flex flex-col z-10 glass">
-			<div className="p-6 border-b border-white/5">
+		<div className="w-full md:w-96 bg-surface h-[35vh] md:h-full border-r border-white/5 flex flex-col z-10 glass shrink-0">
+			<div className="p-4 md:p-6 border-b border-white/5 shrink-0 hidden md:block">
 				<Link href="/" className="flex items-center gap-2 mb-6 group">
 					<span className="text-xl font-bold text-white">
 						WatchWay<span className="text-primary">.NG</span>
@@ -114,9 +114,14 @@ export function MapSidebar({ reports, onReportClick }: MapSidebarProps) {
 				))}
 			</div>
 
-			<div className="p-4 border-t border-white/5">
+			<div className="p-4 border-t border-white/5 space-y-3">
 				<Link href="/report">
 					<Button className="w-full">Report New Hazard</Button>
+				</Link>
+				<Link href="/leaderboard">
+					<Button variant="outline" className="w-full">
+						View Database Dashboard
+					</Button>
 				</Link>
 			</div>
 		</div>

@@ -52,12 +52,12 @@ export default function MapPage() {
 	};
 
 	return (
-		<div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-background text-foreground">
+		<div className="flex flex-col-reverse md:flex-row h-[100dvh] w-screen overflow-hidden bg-background text-foreground">
 			{/* Sidebar with Stats */}
 			<MapSidebar reports={reports} onReportClick={handleReportClick} />
 
 			{/* Main Map Area */}
-			<div className="flex-1 relative h-full">
+			<div className="flex-1 relative h-[65vh] md:h-full">
 				<InfrastructureMap
 					reports={reports}
 					focusLocation={focusLocation}
