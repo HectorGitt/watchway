@@ -11,6 +11,7 @@ import { determineJurisdiction } from "@/lib/jurisdiction";
 import { api } from "@/lib/api";
 import { FadeIn } from "@/components/ui/animations";
 import { toast } from "sonner";
+import { GoogleLogin } from "@react-oauth/google";
 
 type Step = "location" | "photo" | "details" | "success";
 
@@ -22,6 +23,7 @@ export default function ReportPage() {
 	);
 	const [liveImage, setLiveImage] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [showLoginModal, setShowLoginModal] = useState(false);
 
 	// Form Data
 	const [hazardType, setHazardType] = useState("");
@@ -64,8 +66,16 @@ export default function ReportPage() {
 		setStep("details");
 	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
+	const handleSubmit = async (e?: React.FormEvent) => {
+		if (e) e.preventDefault();
+
+		// Intercept if not logged in
+		const token = localStorage.getItem("token");
+		if (!token) {
+			setShowLoginModal(true);
+			return;
+		}
+
 		setIsSubmitting(true);
 
 		try {
@@ -89,8 +99,53 @@ export default function ReportPage() {
 		}
 	};
 
+	const handleGoogleSuccess = async (credentialResponse: any) => {
+		try {
+			await api.loginWithGoogle(credentialResponse.credential);
+			setShowLoginModal(false);
+			toast.success("Successfully logged in!");
+			// Immediately resume submission
+			handleSubmit();
+		} catch (err) {
+			console.error(err);
+			toast.error("Failed to sign in with Google.");
+		}
+	};
+
 	return (
 		<div className="min-h-screen bg-background text-foreground flex flex-col">
+			{/* Login Modal Interceptor */}
+			{showLoginModal && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+					<FadeIn className="bg-surface border border-white/10 p-8 rounded-2xl max-w-sm w-full text-center">
+						<h3 className="text-2xl font-bold mb-2">
+							Almost there!
+						</h3>
+						<p className="text-gray-400 text-sm mb-6">
+							Please sign in to securely submit your report and
+							track your civic points.
+						</p>
+						<div className="flex justify-center mb-6">
+							<GoogleLogin
+								onSuccess={handleGoogleSuccess}
+								onError={() =>
+									toast.error("Google login failed")
+								}
+								theme="filled_black"
+								shape="pill"
+							/>
+						</div>
+						<Button
+							variant="ghost"
+							onClick={() => setShowLoginModal(false)}
+							className="text-gray-500"
+						>
+							Cancel
+						</Button>
+					</FadeIn>
+				</div>
+			)}
+
 			{/* Header */}
 			<div className="p-4 border-b border-white/5 flex items-center justify-between">
 				<button

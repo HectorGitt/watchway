@@ -48,6 +48,22 @@ export const api = {
 		return data;
 	},
 
+	loginWithGoogle: async (googleToken: string) => {
+		const res = await fetch(`${API_URL}/auth/google`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ token: googleToken }),
+		});
+
+		if (!res.ok) {
+			throw new Error("Google login failed");
+		}
+
+		const data = await res.json();
+		localStorage.setItem("token", data.access_token);
+		return data;
+	},
+
 	resendVerification: async (email: string) => {
 		const res = await fetch(
 			`${API_URL}/resend-verification?email=${encodeURIComponent(email)}`,
@@ -147,9 +163,6 @@ export const api = {
 	submitReport: async (reportData: any) => {
 		const token = localStorage.getItem("token");
 		if (!token) {
-			if (typeof window !== "undefined") {
-				window.location.href = "/login";
-			}
 			throw new Error("Not authenticated");
 		}
 
