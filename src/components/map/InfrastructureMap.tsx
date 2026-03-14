@@ -146,6 +146,70 @@ const MapController = ({
 		}
 	}, [focusLocation, map]);
 
+	// Locate User controls
+	useEffect(() => {
+		const LocateControl = L.Control.extend({
+			options: {
+				position: "bottomright",
+			},
+			onAdd: function () {
+				const div = L.DomUtil.create(
+					"div",
+					"leaflet-bar leaflet-control leaflet-control-custom",
+				);
+				div.style.backgroundColor = "#1e1e1e";
+				div.style.border = "1px solid rgba(255, 255, 255, 0.1)";
+				div.style.cursor = "pointer";
+				div.style.padding = "8px";
+				div.style.borderRadius = "8px";
+				div.innerHTML = `<svg xmlns="http://www.apache.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/></svg>`;
+
+				div.onclick = function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+					map.locate({ setView: true, maxZoom: 16 });
+				};
+
+				div.onmouseover = function () {
+					div.style.backgroundColor = "#2a2a2a";
+				};
+				div.onmouseout = function () {
+					div.style.backgroundColor = "#1e1e1e";
+				};
+
+				return div;
+			},
+		});
+
+		const locateControl = new LocateControl();
+		map.addControl(locateControl);
+
+		// Handle successful location found
+		const onLocationFound = (e: L.LocationEvent) => {
+			L.circle(e.latlng, {
+				color: "#00A3FF",
+				fillColor: "#00A3FF",
+				fillOpacity: 0.3,
+				radius: e.accuracy / 2,
+			}).addTo(map);
+
+			L.circleMarker(e.latlng, {
+				color: "#fff",
+				fillColor: "#00A3FF",
+				fillOpacity: 1,
+				radius: 5,
+				weight: 2,
+			}).addTo(map);
+		};
+
+		map.on("locationfound", onLocationFound);
+
+		return () => {
+			map.removeControl(locateControl);
+			map.off("locationfound", onLocationFound);
+		};
+	}, [map]);
+
 	return null;
 };
 

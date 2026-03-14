@@ -57,7 +57,7 @@ export default function MapPage() {
 			<MapSidebar reports={reports} onReportClick={handleReportClick} />
 
 			{/* Main Map Area */}
-			<div className="flex-1 relative h-[65vh] md:h-full">
+			<div className="flex-1 relative h-full w-full">
 				<InfrastructureMap
 					reports={reports}
 					focusLocation={focusLocation}
