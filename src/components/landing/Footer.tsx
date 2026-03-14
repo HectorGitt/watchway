@@ -6,9 +6,17 @@ export function Footer() {
 			<div className="container mx-auto px-4">
 				<div className="grid md:grid-cols-4 gap-8 mb-8">
 					<div>
-						<span className="text-xl font-bold text-white block mb-4">
-							WatchWay<span className="text-primary">.NG</span>
-						</span>
+						<div className="flex items-center gap-2 mb-4 justify-center md:justify-start">
+							<img
+								src="/android-chrome-192x192.png"
+								alt="Watchway Logo"
+								className="h-6 w-6"
+							/>
+							<span className="text-xl font-bold text-white block">
+								WatchWay
+								<span className="text-primary">.ORG</span>
+							</span>
+						</div>
 						<p className="text-gray-500 text-sm">
 							Documenting the decay. Demanding the fix. A national
 							crowdsourced initiative.

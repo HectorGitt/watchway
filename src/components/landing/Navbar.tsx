@@ -39,11 +39,13 @@ export function Navbar() {
 		<nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-white/5">
 			<div className="container mx-auto px-4 h-20 flex items-center justify-between">
 				<Link href="/" className="flex items-center gap-2 group">
-					<div className="bg-primary/20 p-2 rounded-lg group-hover:bg-primary/30 transition-colors">
-						<ShieldAlert className="h-6 w-6 text-primary" />
-					</div>
+					<img
+						src="/android-chrome-192x192.png"
+						alt="Watchway Logo"
+						className="h-8 w-8"
+					/>
 					<span className="text-2xl font-bold text-white">
-						WatchWay<span className="text-primary">.NG</span>
+						WatchWay<span className="text-primary">.ORG</span>
 					</span>
 				</Link>
 

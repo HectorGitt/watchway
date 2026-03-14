@@ -19,8 +19,13 @@ export function MapSidebar({ reports, onReportClick }: MapSidebarProps) {
 			{/* Mobile Header Bar */}
 			<div className="md:hidden flex items-center justify-between p-4 bg-surface border-b border-white/5 shrink-0 z-50 relative">
 				<Link href="/" className="flex items-center gap-2 group">
+					<img
+						src="/android-chrome-192x192.png"
+						alt="Watchway Logo"
+						className="h-6 w-6"
+					/>
 					<span className="text-xl font-bold text-white">
-						WatchWay<span className="text-primary">.NG</span>
+						WatchWay<span className="text-primary">.ORG</span>
 					</span>
 				</Link>
 
@@ -99,8 +104,13 @@ export function MapSidebar({ reports, onReportClick }: MapSidebarProps) {
 						href="/"
 						className="flex items-center gap-2 mb-6 group"
 					>
+						<img
+							src="/android-chrome-192x192.png"
+							alt="Watchway Logo"
+							className="h-6 w-6"
+						/>
 						<span className="text-xl font-bold text-white">
-							WatchWay<span className="text-primary">.NG</span>
+							WatchWay<span className="text-primary">.ORG</span>
 						</span>
 					</Link>
 
