@@ -32,6 +32,7 @@ export const metadata: Metadata = {
 	manifest: "/site.webmanifest",
 };
 import Script from "next/script";
+import { SharedNavbar } from "@/components/layout/SharedNavbar";
 
 export default function RootLayout({
 	children,
@@ -79,6 +80,7 @@ export default function RootLayout({
 						"your-google-client-id"
 					}
 				>
+					<SharedNavbar />
 					{children}
 					<Toaster richColors position="top-right" theme="dark" />
 				</GoogleOAuthProvider>

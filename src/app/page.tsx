@@ -7,15 +7,14 @@ import { Footer } from "@/components/landing/Footer";
 import { RoleExplainer } from "@/components/landing/RoleExplainer";
 
 export default function Home() {
-  return (
-    <main className="min-h-screen flex flex-col bg-background text-foreground">
-      <Navbar />
-      <Hero />
-      <Problem />
-      <RoleExplainer />
-      <Features />
-      <CTA />
-      <Footer />
-    </main>
-  );
+	return (
+		<main className="min-h-screen flex flex-col bg-background text-foreground">
+			<Hero />
+			<Problem />
+			<RoleExplainer />
+			<Features />
+			<CTA />
+			<Footer />
+		</main>
+	);
 }

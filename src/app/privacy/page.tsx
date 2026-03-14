@@ -4,7 +4,6 @@ import { Footer } from "@/components/landing/Footer";
 export default function PrivacyPolicy() {
 	return (
 		<main className="min-h-screen flex flex-col bg-background text-foreground">
-			<Navbar />
 			<div className="flex-1 container mx-auto px-4 py-32 max-w-4xl">
 				<h1 className="text-4xl md:text-5xl font-bold mb-6">
 					Privacy Policy
