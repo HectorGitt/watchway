@@ -1,5 +1,5 @@
 import { Report } from "@/lib/types";
-import { AlertTriangle, Home, Building2 } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -9,17 +9,6 @@ interface MapSidebarProps {
 }
 
 export function MapSidebar({ reports, onReportClick }: MapSidebarProps) {
-	// Quick Stats Logic
-	const federalCount = reports.filter(
-		(r) =>
-			r.jurisdiction === "FEDERAL" ||
-			r.jurisdiction?.toUpperCase() === "LAGOS",
-	).length;
-	const stateCount = reports.filter(
-		(r) =>
-			r.jurisdiction === "STATE" ||
-			r.jurisdiction?.toUpperCase() === "IBADAN",
-	).length;
 	const criticalCount = reports.filter((r) => r.severity_level >= 8).length;
 
 	return (
@@ -35,28 +24,6 @@ export function MapSidebar({ reports, onReportClick }: MapSidebarProps) {
 				<p className="text-gray-400 text-sm">
 					Real-time infrastructure decay tracking across Nigeria.
 				</p>
-			</div>
-
-			{/* Quick Stats Grid */}
-			<div className="grid grid-cols-2 gap-4 p-4 border-b border-white/5">
-				<div className="bg-white/5 p-4 rounded-xl border border-white/5">
-					<div className="flex items-center gap-2 text-red-500 mb-2">
-						<Building2 className="h-4 w-4" />
-						<span className="text-xs font-bold uppercase">
-							Lagos
-						</span>
-					</div>
-					<span className="text-2xl font-bold">{federalCount}</span>
-				</div>
-				<div className="bg-white/5 p-4 rounded-xl border border-white/5">
-					<div className="flex items-center gap-2 text-orange-500 mb-2">
-						<Home className="h-4 w-4" />
-						<span className="text-xs font-bold uppercase">
-							Ibadan
-						</span>
-					</div>
-					<span className="text-2xl font-bold">{stateCount}</span>
-				</div>
 			</div>
 
 			<div className="p-4 border-b border-white/5 bg-red-900/10">
