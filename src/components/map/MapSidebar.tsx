@@ -85,7 +85,7 @@ export function MapSidebar({ reports, onReportClick }: MapSidebarProps) {
 				<Link href="/report">
 					<Button className="w-full">Report New Hazard</Button>
 				</Link>
-				<Link href="/leaderboard">
+				<Link href="/hazards">
 					<Button variant="outline" className="w-full">
 						View Database Dashboard
 					</Button>
