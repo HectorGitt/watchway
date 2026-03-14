@@ -3,50 +3,62 @@
 @tailwind utilities;
 
 :root {
-  --background: #050505;
-  /* Deep black */
-  --foreground: #e5e5e5;
-  --primary: #FF5500;
-  /* Vibrant Orange for Action/Danger */
-  --primary-foreground: #ffffff;
-  --accent: #00A3FF;
-  /* Tech Blue for data/maps */
-  --surface: #121212;
-  --surface-highlight: #1E1E1E;
-  --border: #2A2A2A;
+	--background: #050505;
+	/* Deep black */
+	--foreground: #e5e5e5;
+	--primary: #ff5500;
+	/* Vibrant Orange for Action/Danger */
+	--primary-foreground: #ffffff;
+	--accent: #00a3ff;
+	/* Tech Blue for data/maps */
+	--surface: #121212;
+	--surface-highlight: #1e1e1e;
+	--border: #2a2a2a;
 }
 
-
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-outfit), sans-serif;
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-outfit), sans-serif;
 }
 
 /* Glassmorphism Utilities */
 .glass {
-  background: rgba(18, 18, 18, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+	background: rgba(18, 18, 18, 0.6);
+	backdrop-filter: blur(12px);
+	border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .glass-card {
-  background: linear-gradient(180deg, rgba(30, 30, 30, 0.6) 0%, rgba(18, 18, 18, 0.4) 100%);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	background: linear-gradient(
+		180deg,
+		rgba(30, 30, 30, 0.6) 0%,
+		rgba(18, 18, 18, 0.4) 100%
+	);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Leaflet Dark Mode Overrides */
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: #1E1E1E !important;
-  color: #e5e5e5 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+	background: #1e1e1e !important;
+	color: #e5e5e5 !important;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+}
+
+.leaflet-container {
+	color: #e5e5e5 !important;
+	font-family: inherit !important;
 }
 
 .leaflet-popup-content {
-  margin: 10px !important;
+	margin: 10px !important;
+}
+
+/* High-Contrast Map Tiles */
+.dark-map-tiles {
+	filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }

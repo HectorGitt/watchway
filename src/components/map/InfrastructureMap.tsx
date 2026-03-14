@@ -178,10 +178,11 @@ export default function InfrastructureMap({
 			className="w-full h-full z-0"
 			style={{ width: "100%", height: "100%" }}
 		>
-			{/* Dark Mode Map Style (CartoDB Dark Matter) */}
+			{/* Customized High-Contrast Dark Mode Map */}
 			<TileLayer
-				attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-				url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+				attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				className="dark-map-tiles"
 			/>
 
 			{reports
