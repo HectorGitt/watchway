@@ -36,12 +36,12 @@ export function Footer() {
 						>
 							Privacy
 						</Link>
-						<a
-							href="#"
+						<Link
+							href="/terms"
 							className="text-gray-600 hover:text-white text-sm"
 						>
 							Terms
-						</a>
+						</Link>
 					</div>
 				</div>
 			</div>
