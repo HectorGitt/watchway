@@ -1,2 +1,16 @@
-https://stabilty.com*  https://watchway.org  301!
-https://netlify.app*  https://watchway.org  301!
+# Redirect old domains and Netlify previews to the canonical domain and preserve path
+
+# Syntax: <from> <to> [status] [! = force]
+
+https://stabilty.com/_ https://watchway.org/:splat 301!
+https://www.stabilty.com/_ https://watchway.org/:splat 301!
+
+# Redirect all Netlify preview domains (subdomains) to canonical site
+
+http://_.netlify.app/_ https://watchway.org/:splat 301!
+https://_.netlify.app/_ https://watchway.org/:splat 301!
+
+# Catch the root netlify.app (if used)
+
+http://netlify.app/_ https://watchway.org/:splat 301!
+https://netlify.app/_ https://watchway.org/:splat 301!
