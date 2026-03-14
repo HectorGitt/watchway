@@ -52,8 +52,8 @@ export default function MapPage() {
 	};
 
 	return (
-		<div className="flex flex-col-reverse md:flex-row h-[100dvh] w-screen overflow-hidden bg-background text-foreground">
-			{/* Sidebar with Stats */}
+		<div className="flex flex-col md:flex-row h-[100dvh] w-screen overflow-hidden bg-background text-foreground">
+			{/* Mobile Header -> Moves to top because of flex-col instead of flex-col-reverse */}
 			<MapSidebar reports={reports} onReportClick={handleReportClick} />
 
 			{/* Main Map Area */}
