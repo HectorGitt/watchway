@@ -62,3 +62,27 @@ body {
 .dark-map-tiles {
 	filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--border);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--primary);
+}
+
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--border) var(--background);
+}
