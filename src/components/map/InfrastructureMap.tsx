@@ -25,11 +25,11 @@ interface MapProps {
 	initialZoom?: number;
 }
 
-const getHazardIconHTML = (title: string, jurisdiction: string) => {
+const getHazardIconHTML = (title: string, jurisdiction?: string) => {
 	// Assuming jurisdiction might still be FEDERAL/STATE from backend, but mapped to Lagos/Ibadan colors.
 	// Or if jurisdiction actually comes as 'LAGOS'/'IBADAN', we handle both.
 	const isLagos =
-		jurisdiction === "FEDERAL" || jurisdiction.toUpperCase() === "LAGOS";
+		jurisdiction === "FEDERAL" || jurisdiction?.toUpperCase() === "LAGOS";
 	const colorClass = isLagos ? "text-red-500" : "text-orange-500";
 
 	// Determine icon based on title (hazard type)
@@ -71,7 +71,7 @@ const getHazardIconHTML = (title: string, jurisdiction: string) => {
 };
 
 // Custom Pins (using CSS classes for colors)
-const createIcon = (title: string, jurisdiction: string) => {
+const createIcon = (title: string, jurisdiction?: string) => {
 	return L.divIcon({
 		className: "custom-icon bg-transparent border-0",
 		html: getHazardIconHTML(title, jurisdiction),
@@ -101,7 +101,7 @@ const FlyToMarker = ({ report }: { report: Report }) => {
 			<Popup className="glass-popup">
 				<div className="p-1 min-w-[150px]">
 					<span
-						className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white mb-2 inline-block ${report.jurisdiction === "FEDERAL" || report.jurisdiction.toUpperCase() === "LAGOS" ? "bg-red-600" : "bg-orange-500"}`}
+						className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white mb-2 inline-block ${report.jurisdiction === "FEDERAL" || report.jurisdiction?.toUpperCase() === "LAGOS" ? "bg-red-600" : "bg-orange-500"}`}
 					>
 						{report.jurisdiction === "FEDERAL"
 							? "LAGOS"
@@ -171,7 +171,6 @@ export default function InfrastructureMap({
 
 	return (
 		<PacketMap
-			key={`${initialCenter[0]}-${initialCenter[1]}-${initialZoom}`}
 			center={initialCenter}
 			zoom={initialZoom}
 			scrollWheelZoom={true}
