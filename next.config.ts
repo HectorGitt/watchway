@@ -1,7 +1,32 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+	async redirects() {
+		return [
+			{
+				source: "/:path*",
+				has: [
+					{
+						type: "host",
+						value: "://stabilty.com",
+					},
+				],
+				destination: "https://watchway.org*",
+				permanent: true,
+			},
+			{
+				source: "/:path*",
+				has: [
+					{
+						type: "host",
+						value: "watchway.netlify.app",
+					},
+				],
+				destination: "https://watchway.org*",
+				permanent: true,
+			},
+		];
+	},
 };
 
-export default nextConfig;
+module.exports = nextConfig;
