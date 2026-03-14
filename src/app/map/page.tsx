@@ -62,23 +62,6 @@ export default function MapPage() {
 					reports={reports}
 					focusLocation={focusLocation}
 				/>
-
-				{/* Floating Legend / Info for Mobile if needed */}
-				<div className="absolute bottom-6 right-6 z-[400] bg-surface/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl max-w-xs hidden md:block">
-					<h4 className="font-bold text-xs uppercase text-gray-400 mb-2">
-						Location Legend
-					</h4>
-					<div className="space-y-2">
-						<div className="flex items-center gap-2">
-							<div className="w-3 h-3 rounded-full bg-red-600 border border-white"></div>
-							<span className="text-sm font-medium">Lagos</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<div className="w-3 h-3 rounded-full bg-orange-500 border border-white"></div>
-							<span className="text-sm font-medium">Ibadan</span>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 	);
